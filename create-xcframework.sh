@@ -26,11 +26,16 @@
 set -euo pipefail  # Exit on error, undefined variables, and pipe failures
 
 # ========================================
-# CONFIGURATIONS (CUSTOMIZE THIS SECTION)
+# LOAD CONFIGURATION
 # ========================================
-PROJECT="luz_epost_ios.xcodeproj"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/config.sh"
+
+# Use project file from config
+PROJECT="${IOS_PROJECT_FILE}"
+
+# Map config.sh variables to script variables
+OUTPUT_DIR="${BUILD_DIR}"
 
 # ========================================
 # COMMAND LINE OPTIONS
@@ -124,20 +129,16 @@ fi
 # Set scheme to match framework name
 SCHEME="$FRAMEWORK_NAME"
 
-# Set output paths based on framework name
-OUTPUT_DIR="${PROJECT_ROOT}/build"
-DERIVED_DATA_PATH="${OUTPUT_DIR}/DerivedData"
+# Use paths from config.sh (BUILD_DIR -> OUTPUT_DIR mapping done above)
+DERIVED_DATA_PATH="${DERIVED_DATA}"
 
 # Determine XCFramework output path
 if [ -n "$OUTPUT_CUSTOM_DIR" ]; then
     # Custom output directory specified
     XCFRAMEWORK_PATH="${OUTPUT_CUSTOM_DIR}/${FRAMEWORK_NAME}.xcframework"
 else
-    # Default: Use convention-based path in ePostSDK directory
-    # Resolve to absolute path for cleaner display
-    mkdir -p "${PROJECT_ROOT}/../ePostSDK"
-    EPOSTSDK_ROOT="$(cd "${PROJECT_ROOT}/../ePostSDK" && pwd)"
-    XCFRAMEWORK_PATH="${EPOSTSDK_ROOT}/${FRAMEWORK_NAME}/${FRAMEWORK_NAME}.xcframework"
+    # Default: Use path from config.sh
+    XCFRAMEWORK_PATH="${XCFRAMEWORK_OUTPUT_DIR}/${FRAMEWORK_NAME}/${FRAMEWORK_NAME}.xcframework"
 fi
 
 # Create parent directory if it doesn't exist
@@ -148,7 +149,7 @@ mkdir -p "$XCFRAMEWORK_PARENT_DIR"
 # SOURCE RESOURCE BUNDLE UTILITY
 # ========================================
 # Source the copy-resource-bundle.sh utility for resource bundle management
-COPY_BUNDLE_SCRIPT="${SCRIPT_DIR}/copy-resource-bundle.sh"
+COPY_BUNDLE_SCRIPT="${SCRIPTS_DIR}/copy-resource-bundle.sh"
 
 if [ -f "$COPY_BUNDLE_SCRIPT" ]; then
     source "$COPY_BUNDLE_SCRIPT"
@@ -162,7 +163,7 @@ fi
 # SOURCE RESOURCE ACCESSOR INJECTION SCRIPT
 # ========================================
 # Source the inject-resource-accessor.sh script for resource accessor patching
-INJECT_SCRIPT="${SCRIPT_DIR}/inject-resource-accessor.sh"
+INJECT_SCRIPT="${SCRIPTS_DIR}/inject-resource-accessor.sh"
 
 if [ -f "$INJECT_SCRIPT" ]; then
     source "$INJECT_SCRIPT"

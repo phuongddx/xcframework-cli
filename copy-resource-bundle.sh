@@ -33,9 +33,15 @@
 
 set -eo pipefail  # Exit on error, pipe failures
 
-# === SCRIPT DIRECTORY ===
+# === LOAD CONFIGURATION ===
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Source config.sh if not already sourced (check if BUILD_DIR is set)
+if [ -z "${BUILD_DIR:-}" ]; then
+    source "${SCRIPT_DIR}/config.sh"
+fi
+
+PROJECT_DIR="${PROJECT_ROOT}"
 
 # === COLOR CODES ===
 RED='\033[0;31m'
@@ -104,10 +110,10 @@ copy_resource_bundle_into_framework() {
     fi
     
     echo "🔍 Searching for resource bundle for platform: $platform_sdk"
-    
+
     # Search for the resource bundle in build artifacts
-    # Use OUTPUT_DIR from parent script or default to PROJECT_DIR/build
-    local output_dir="${OUTPUT_DIR:-${PROJECT_DIR}/build}"
+    # Use OUTPUT_DIR from parent script or BUILD_DIR from config.sh
+    local output_dir="${OUTPUT_DIR:-${BUILD_DIR}}"
     local bundle_source=$(find "$output_dir" -path "*/UninstalledProducts/${platform_sdk}/${bundle_name}" 2>/dev/null | head -1)
     
     if [ -n "$bundle_source" ] && [ -d "$bundle_source" ]; then

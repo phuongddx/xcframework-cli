@@ -11,17 +11,17 @@
 
 set -euo pipefail
 
-# Script directory
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+# Load configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/config.sh"
 
-# Framework names
-EPOST_SDK="ePostSDK"
-PUSH_NOTIFICATION_SDK="ePostPushNotificationSDK"
+# Framework names from config
+EPOST_SDK="${EPOST_SDK_NAME}"
+PUSH_NOTIFICATION_SDK="${PUSH_NOTIFICATION_SDK_NAME}"
 
 # Scripts
-BUILD_SCRIPT="${SCRIPT_DIR}/create-xcframework.sh"
-PUBLISH_SCRIPT="${SCRIPT_DIR}/publish_to_artifactory.sh"
+BUILD_SCRIPT="${SCRIPTS_DIR}/create-xcframework.sh"
+PUBLISH_SCRIPT="${SCRIPTS_DIR}/publish_to_artifactory.sh"
 
 # Color codes
 CYAN='\033[0;36m'

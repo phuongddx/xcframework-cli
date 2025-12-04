@@ -7,7 +7,8 @@ set -euo pipefail
 # This script installs recommended build tools for the project.
 #
 # Usage:
-#   ./scripts/setup.sh
+#   ./tools/xcframework-cli/setup.sh
+#   or: make help (to see available targets)
 #
 # What it installs:
 #   - Homebrew (if not already installed)
@@ -75,5 +76,5 @@ if command -v xcbeautify >/dev/null 2>&1; then
 fi
 
 echo ""
-print_success "You can now run: ./scripts/create-xcframework.sh ePostSDK"
+print_success "You can now run: make debug-simulator (or make help for all options)"
 echo ""

@@ -1,6 +1,10 @@
 #!/bin/bash
 
-FRAMEWORK_NAME="ePostSDK"
+# Load configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/config.sh"
+
+FRAMEWORK_NAME="${EPOST_SDK_NAME}"
 
 # === UPDATE BITBUCKET REPO ===
 # Check for changes

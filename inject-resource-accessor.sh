@@ -32,8 +32,13 @@
 
 set -eo pipefail  # Exit on error, pipe failures
 
-# === SCRIPT DIRECTORY ===
+# === LOAD CONFIGURATION ===
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source config.sh if not already sourced
+if [ -z "${TEMPLATES_DIR:-}" ]; then
+    source "${SCRIPT_DIR}/config.sh"
+fi
 
 # === COLOR CODES ===
 RED='\033[0;31m'
@@ -104,8 +109,8 @@ inject_custom_resource_accessor() {
     # Backup original SPM-generated file
     cp "$accessor_file" "${accessor_file}.original"
 
-    # Get template path (from library's templates directory)
-    local template_path="${SCRIPT_DIR}/templates/resource_bundle_accessor.swift"
+    # Get template path (from config.sh TEMPLATES_DIR)
+    local template_path="${TEMPLATES_DIR}/resource_bundle_accessor.swift"
 
     # Verify template exists
     if [ ! -f "$template_path" ]; then

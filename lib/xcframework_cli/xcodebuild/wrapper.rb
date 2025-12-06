@@ -18,6 +18,7 @@ module XCFrameworkCLI
       # @option options [String] :archive_path Path where archive will be created
       # @option options [Hash] :build_settings Additional build settings (default: {})
       # @option options [String, nil] :derived_data_path Optional derived data path
+      # @option options [Boolean, String] :use_formatter Use output formatter (default: true)
       # @return [Result] Command execution result
       def self.execute_archive(options)
         args = ['archive']
@@ -33,15 +34,19 @@ module XCFrameworkCLI
           args << "#{key}=#{value}"
         end
 
-        execute('xcodebuild', args)
+        execute_options = {}
+        execute_options[:use_formatter] = options[:use_formatter] if options.key?(:use_formatter)
+
+        execute('xcodebuild', args, execute_options)
       end
 
       # Execute xcodebuild -create-xcframework command
       #
       # @param frameworks [Array<Hash>] Array of framework hashes with :path and optional :debug_symbols
       # @param output [String] Output path for the XCFramework
+      # @param use_formatter [Boolean, String] Use output formatter (default: true)
       # @return [Result] Command execution result
-      def self.execute_create_xcframework(frameworks:, output:)
+      def self.execute_create_xcframework(frameworks:, output:, use_formatter: true)
         args = ['-create-xcframework']
 
         frameworks.each do |framework|
@@ -51,7 +56,7 @@ module XCFrameworkCLI
 
         args += ['-output', output]
 
-        execute('xcodebuild', args)
+        execute('xcodebuild', args, { use_formatter: use_formatter })
       end
 
       # Execute xcodebuild clean command

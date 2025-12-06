@@ -1,0 +1,45 @@
+# Basic XCFramework CLI Configuration Example
+# This is a minimal configuration for building an iOS XCFramework
+
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms:
+      - ios
+      - ios-simulator
+    # Optional: Override default architectures
+    # architectures:
+    #   ios: [arm64]
+    #   ios-simulator: [arm64, x86_64]
+    
+    # Optional: Override default deployment targets
+    # deployment_targets:
+    #   ios: "14.0"
+    #   ios-simulator: "14.0"
+    
+    # Optional: Resource bundles to include
+    # resource_bundles:
+    #   - MySDKResources
+    
+    # Optional: Resource module name for accessor
+    # resource_module: MySDK
+
+# Optional: Build settings
+# build:
+#   output_dir: build
+#   xcframework_output: ../SDKs
+#   parallel_builds: false
+#   clean_before_build: true
+
+# Optional: Publishing settings
+# publishing:
+#   artifactory_url: https://artifactory.example.com
+#   package_scope: com.example
+#   version: 1.0.0
+#   git_branch: main
+#   slack_webhook_url: https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+

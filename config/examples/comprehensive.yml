@@ -1,0 +1,90 @@
+# Comprehensive XCFramework CLI Configuration Example
+# This shows all available options for building XCFrameworks across all Apple platforms
+
+project:
+  name: MyComprehensiveSDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  # Multi-platform framework with resource bundles
+  - name: CoreSDK
+    scheme: CoreSDK
+    platforms:
+      - ios
+      - ios-simulator
+      - macos
+      - catalyst
+      - tvos
+      - tvos-simulator
+    architectures:
+      ios: [arm64]
+      ios-simulator: [arm64, x86_64]
+      macos: [arm64, x86_64]
+      catalyst: [arm64, x86_64]
+      tvos: [arm64]
+      tvos-simulator: [arm64, x86_64]
+    deployment_targets:
+      ios: "15.0"
+      ios-simulator: "15.0"
+      macos: "12.0"
+      catalyst: "15.0"
+      tvos: "15.0"
+      tvos-simulator: "15.0"
+    resource_bundles:
+      - CoreSDKResources
+      - CoreSDKAssets
+    resource_module: CoreSDK
+    resource_accessor_template: templates/custom_accessor.swift
+
+  # iOS-only framework without resources
+  - name: NetworkingSDK
+    scheme: NetworkingSDK
+    platforms:
+      - ios
+      - ios-simulator
+    architectures:
+      ios: [arm64]
+      ios-simulator: [arm64, x86_64]
+    deployment_targets:
+      ios: "14.0"
+      ios-simulator: "14.0"
+
+  # watchOS framework
+  - name: WatchSDK
+    scheme: WatchSDK
+    platforms:
+      - watchos
+      - watchos-simulator
+    architectures:
+      watchos: [arm64, arm64_32]
+      watchos-simulator: [arm64, x86_64]
+    deployment_targets:
+      watchos: "7.0"
+      watchos-simulator: "7.0"
+
+  # visionOS framework
+  - name: VisionSDK
+    scheme: VisionSDK
+    platforms:
+      - visionos
+      - visionos-simulator
+    architectures:
+      visionos: [arm64]
+      visionos-simulator: [arm64]
+    deployment_targets:
+      visionos: "1.0"
+      visionos-simulator: "1.0"
+
+build:
+  output_dir: build
+  xcframework_output: ../SDKs
+  parallel_builds: true
+  clean_before_build: true
+
+publishing:
+  artifactory_url: https://artifactory.example.com/artifactory
+  package_scope: com.example.sdk
+  version: 2.1.0
+  git_branch: main
+  slack_webhook_url: https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXX
+

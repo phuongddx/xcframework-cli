@@ -34,6 +34,9 @@ frameworks:
 #   xcframework_output: ../SDKs
 #   parallel_builds: false
 #   clean_before_build: true
+#   verbose: false                     # Enable verbose output (shows xcodebuild logs)
+#   use_formatter: true                # Use xcbeautify/xcpretty for formatted output
+#                                      # Can also be: "xcbeautify" or "xcpretty" to specify
 
 # Optional: Publishing settings
 # publishing:

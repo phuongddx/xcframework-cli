@@ -167,6 +167,7 @@ module XCFrameworkCLI
 
         build_options = {}
         build_options[:deployment_target] = config[:deployment_target] if config[:deployment_target]
+        build_options[:use_formatter] = config[:use_formatter] if config.key?(:use_formatter)
 
         archiver.build_archives(config[:platforms], build_options)
       end

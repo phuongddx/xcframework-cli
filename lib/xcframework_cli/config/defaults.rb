@@ -9,7 +9,9 @@ module XCFrameworkCLI
         output_dir: 'build',
         xcframework_output: '../SDKs',
         parallel_builds: false,
-        clean_before_build: true
+        clean_before_build: true,
+        verbose: false,
+        use_formatter: true
       }.freeze
 
       # Default deployment targets for each platform

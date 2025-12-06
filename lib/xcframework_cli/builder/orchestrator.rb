@@ -114,8 +114,11 @@ module XCFrameworkCLI
       # @param config [Hash] Configuration to validate
       # @return [Hash] Validated configuration with defaults
       def validate_config(config)
+        # Convert to regular hash if it's a Thor hash
+        config_hash = config.to_h
+
         required_keys = %i[project_path scheme framework_name output_dir]
-        missing_keys = required_keys - config.keys
+        missing_keys = required_keys - config_hash.keys
 
         unless missing_keys.empty?
           raise ArgumentError, "Missing required configuration keys: #{missing_keys.join(', ')}"
@@ -128,7 +131,7 @@ module XCFrameworkCLI
           deployment_target: nil
         }
 
-        defaults.merge(config)
+        defaults.merge(config_hash)
       end
 
       # Clean build artifacts

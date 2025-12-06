@@ -49,6 +49,8 @@ module XCFrameworkCLI
           optional(:xcframework_output).filled(:string)
           optional(:parallel_builds).filled(:bool)
           optional(:clean_before_build).filled(:bool)
+          optional(:verbose).filled(:bool)
+          optional(:use_formatter).filled
         end
 
         optional(:publishing).hash do

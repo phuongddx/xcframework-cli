@@ -14,8 +14,10 @@ module XCFrameworkCLI
       module Build
         class << self
           def execute(options)
-            setup_logger(options)
+            # Load configuration first to get verbose setting
             config = load_configuration(options)
+            # Setup logger with config settings (CLI options override)
+            setup_logger(options, config[:_raw_config])
             validate_configuration(config)
             run_build(config)
           rescue XCFrameworkCLI::Error => e
@@ -29,9 +31,13 @@ module XCFrameworkCLI
 
           private
 
-          def setup_logger(options)
-            Utils::Logger.verbose = options[:verbose]
-            Utils::Logger.quiet = options[:quiet]
+          def setup_logger(options, config = nil)
+            # CLI options override config file settings
+            verbose = options[:verbose] || (config && config[:build]&.[](:verbose)) || false
+            quiet = options[:quiet] || false
+
+            Utils::Logger.verbose = verbose
+            Utils::Logger.quiet = quiet
           end
 
           def load_configuration(options)
@@ -73,7 +79,9 @@ module XCFrameworkCLI
               output_dir: output_dir,
               platforms: framework[:platforms] || options[:platforms],
               clean: config[:build][:clean_before_build].nil? ? options[:clean] : config[:build][:clean_before_build],
-              include_debug_symbols: options[:debug_symbols]
+              include_debug_symbols: options[:debug_symbols],
+              use_formatter: config[:build][:use_formatter],
+              _raw_config: config
             }
           end
           # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
@@ -88,7 +96,8 @@ module XCFrameworkCLI
               output_dir: options[:output],
               platforms: options[:platforms],
               clean: options[:clean],
-              include_debug_symbols: options[:debug_symbols]
+              include_debug_symbols: options[:debug_symbols],
+              use_formatter: true # Default to true for command-line mode
             }
           end
 

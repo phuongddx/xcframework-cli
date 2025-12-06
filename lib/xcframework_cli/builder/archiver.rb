@@ -45,14 +45,17 @@ module XCFrameworkCLI
         )
 
         # Execute archive command
-        result = Xcodebuild::Wrapper.execute_archive(
+        archive_options = {
           project: project_path,
           scheme: scheme,
           destination: platform.destination,
           archive_path: archive_path,
           build_settings: build_settings,
           derived_data_path: derived_data_path
-        )
+        }
+        archive_options[:use_formatter] = options[:use_formatter] if options.key?(:use_formatter)
+
+        result = Xcodebuild::Wrapper.execute_archive(archive_options)
 
         if result.success?
           # Clean private Swift interfaces

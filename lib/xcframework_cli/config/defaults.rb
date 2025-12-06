@@ -61,9 +61,7 @@ module XCFrameworkCLI
           end
 
           # Apply publishing defaults
-          if config[:publishing]
-            config[:publishing] = PUBLISHING_DEFAULTS.merge(config[:publishing])
-          end
+          config[:publishing] = PUBLISHING_DEFAULTS.merge(config[:publishing]) if config[:publishing]
 
           config
         end
@@ -100,4 +98,3 @@ module XCFrameworkCLI
     end
   end
 end
-

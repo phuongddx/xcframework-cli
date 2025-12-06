@@ -47,4 +47,3 @@ module XCFrameworkCLI
   class ArtifactoryError < PublishError; end
   class GitError < PublishError; end
 end
-

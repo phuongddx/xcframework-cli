@@ -6,7 +6,7 @@ module XCFrameworkCLI
   module Utils
     # Wrapper for TTY::Spinner with consistent styling
     class Spinner
-      def self.spin(message, &block)
+      def self.spin(message)
         return yield if Logger.quiet
 
         spinner = TTY::Spinner.new("[:spinner] #{message}...", format: :dots)
@@ -38,4 +38,3 @@ module XCFrameworkCLI
     end
   end
 end
-

@@ -62,16 +62,12 @@ module XCFrameworkCLI
 
       rule('frameworks').each do
         key.failure('must have at least one platform') if value[:platforms].empty?
-      end
 
-      rule('frameworks').each do
         value[:platforms]&.each do |platform|
           key.failure("invalid platform: #{platform}") unless VALID_PLATFORMS.include?(platform)
         end
-      end
 
-      rule('frameworks').each do
-        value[:architectures]&.each do |_platform, archs|
+        value[:architectures]&.each_value do |archs|
           archs.each do |arch|
             key.failure("invalid architecture: #{arch}") unless VALID_ARCHITECTURES.include?(arch)
           end
@@ -80,4 +76,3 @@ module XCFrameworkCLI
     end
   end
 end
-

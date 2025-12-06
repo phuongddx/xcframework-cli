@@ -25,13 +25,12 @@ RSpec.configure do |config|
   end
 
   # Suppress logger output during tests
-  config.before(:each) do
+  config.before do
     XCFrameworkCLI.configure_logger(quiet: true)
   end
 
   # Reset logger after tests
-  config.after(:each) do
+  config.after do
     XCFrameworkCLI.configure_logger(quiet: false, verbose: false)
   end
 end
-

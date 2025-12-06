@@ -10,8 +10,8 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'A professional Ruby CLI tool for building XCFrameworks across all Apple platforms'
   spec.description   = <<~DESC
-    XCFramework CLI is a framework-agnostic tool for building XCFrameworks for iOS, macOS, tvOS, 
-    watchOS, visionOS, and Mac Catalyst. It provides a clean Ruby interface to xcodebuild with 
+    XCFramework CLI is a framework-agnostic tool for building XCFrameworks for iOS, macOS, tvOS,#{' '}
+    watchOS, visionOS, and Mac Catalyst. It provides a clean Ruby interface to xcodebuild with#{' '}
     support for resource bundles, custom accessors, and Artifactory publishing.
   DESC
   spec.homepage      = 'https://github.com/aavn/xcframework-cli'
@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/aavn/xcframework-cli'
   spec.metadata['changelog_uri'] = 'https://github.com/aavn/xcframework-cli/blob/main/CHANGELOG.md'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.glob('{bin,lib,templates,config}/**/*') + %w[
@@ -49,4 +50,3 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov', '~> 0.22'
   spec.add_development_dependency 'yard', '~> 0.9'
 end
-

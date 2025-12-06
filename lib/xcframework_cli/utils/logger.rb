@@ -49,9 +49,9 @@ module XCFrameworkCLI
           return if quiet
 
           puts
-          puts "═" * 60
+          puts '═' * 60
           puts "  #{title}".colorize(:cyan).bold
-          puts "═" * 60
+          puts '═' * 60
           puts
         end
 
@@ -89,4 +89,3 @@ module XCFrameworkCLI
     end
   end
 end
-

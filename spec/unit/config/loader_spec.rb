@@ -16,7 +16,7 @@ RSpec.describe XCFrameworkCLI::Config::Loader do
             {
               'name' => 'TestSDK',
               'scheme' => 'TestSDK',
-              'platforms' => ['ios', 'ios-simulator']
+              'platforms' => %w[ios ios-simulator]
             }
           ]
         }
@@ -43,7 +43,7 @@ RSpec.describe XCFrameworkCLI::Config::Loader do
             {
               name: 'TestSDK',
               scheme: 'TestSDK',
-              platforms: ['ios', 'ios-simulator']
+              platforms: %w[ios ios-simulator]
             }
           ]
         }
@@ -154,4 +154,3 @@ RSpec.describe XCFrameworkCLI::Config::Loader do
     end
   end
 end
-

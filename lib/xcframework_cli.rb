@@ -28,4 +28,3 @@ module XCFrameworkCLI
     end
   end
 end
-

@@ -39,4 +39,3 @@ task :console do
   require_relative 'lib/xcframework_cli'
   Pry.start
 end
-

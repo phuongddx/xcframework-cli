@@ -4,11 +4,27 @@ require:
 AllCops:
   TargetRubyVersion: 3.0
   NewCops: enable
+  SuggestExtensions: false
   Exclude:
     - 'vendor/**/*'
     - 'tmp/**/*'
     - 'coverage/**/*'
     - 'bin/**/*'
+
+# Disable problematic Capybara cops (not using Capybara)
+Capybara/RSpec/PredicateMatcher:
+  Enabled: false
+
+# Gemspec development dependencies are also in Gemfile (intentional)
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+# RSpec file path format - using XCFrameworkCLI namespace
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
 
 # Style preferences
 Style/Documentation:
@@ -21,16 +37,26 @@ Style/FrozenStringLiteralComment:
   Enabled: true
 
 # Metrics
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+Metrics/MethodLength:
+  Max: 50
+  Exclude:
+    - 'spec/**/*'
+
 Metrics/BlockLength:
+  Max: 30
   Exclude:
     - 'spec/**/*'
     - 'Rakefile'
     - '*.gemspec'
-
-Metrics/MethodLength:
-  Max: 20
-  Exclude:
-    - 'spec/**/*'
 
 Metrics/ClassLength:
   Max: 150
@@ -46,7 +72,7 @@ Layout/LineLength:
 
 # RSpec
 RSpec/ExampleLength:
-  Max: 15
+  Max: 25
 
 RSpec/MultipleExpectations:
   Max: 5

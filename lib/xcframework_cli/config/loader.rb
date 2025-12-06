@@ -23,14 +23,16 @@ module XCFrameworkCLI
         # Load configuration from file or auto-detect
         def load(path: nil)
           config_path = path || find_config_file
-          raise FileNotFoundError.new(
-            'No configuration file found',
-            suggestions: [
-              "Run 'xcframework-cli init' to create a configuration file",
-              "Create .xcframework.yml manually",
-              "Specify config path with --config option"
-            ]
-          ) unless config_path
+          unless config_path
+            raise FileNotFoundError.new(
+              'No configuration file found',
+              suggestions: [
+                "Run 'xcframework-cli init' to create a configuration file",
+                'Create .xcframework.yml manually',
+                'Specify config path with --config option'
+              ]
+            )
+          end
 
           config = load_file(config_path)
           config = Defaults.apply(config)
@@ -46,14 +48,16 @@ module XCFrameworkCLI
 
         # Load configuration from file
         def load_file(path)
-          raise FileNotFoundError.new(
-            "Configuration file not found: #{path}",
-            suggestions: [
-              "Check the file path",
-              "Ensure the file exists",
-              "Run 'xcframework-cli init' to create a new config"
-            ]
-          ) unless File.exist?(path)
+          unless File.exist?(path)
+            raise FileNotFoundError.new(
+              "Configuration file not found: #{path}",
+              suggestions: [
+                'Check the file path',
+                'Ensure the file exists',
+                "Run 'xcframework-cli init' to create a new config"
+              ]
+            )
+          end
 
           content = File.read(path)
 
@@ -125,4 +129,3 @@ module XCFrameworkCLI
     end
   end
 end
-

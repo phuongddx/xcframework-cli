@@ -522,7 +522,7 @@ class Platform::Base
 end
 ```
 
-See [`ARCHITECTURE_OVERVIEW.md`](ARCHITECTURE_OVERVIEW.md) for detailed diagrams.
+See [`ARCHITECTURE_OVERVIEW.md`](docs/ARCHITECTURE_OVERVIEW.md) for detailed diagrams.
 
 ---
 
@@ -555,9 +555,11 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ## Documentation
 
 - **[CLAUDE.md](CLAUDE.md)** - AI assistant guide for development
-- **[ARCHITECTURE_OVERVIEW.md](ARCHITECTURE_OVERVIEW.md)** - Detailed architecture
-- **[PHASE_D_SUMMARY.md](PHASE_D_SUMMARY.md)** - Integration testing summary
-- **[IMPLEMENTATION_PROGRESS.md](IMPLEMENTATION_PROGRESS.md)** - Development roadmap
+- **[Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)** - Detailed architecture
+- **[Phase D Summary](docs/PHASE_D_SUMMARY.md)** - Integration testing summary
+- **[Implementation Progress](docs/IMPLEMENTATION_PROGRESS.md)** - Development roadmap
+- **[Changelog](docs/CHANGELOG.md)** - Version history
+- **[All Documentation](docs/)** - Complete documentation index
 
 ---
 

@@ -2,6 +2,7 @@
 
 require 'open3'
 require_relative 'result'
+require_relative 'formatter'
 
 module XCFrameworkCLI
   module Xcodebuild
@@ -72,27 +73,42 @@ module XCFrameworkCLI
       #
       # @param command [String] Command to execute
       # @param args [Array<String>] Command arguments
+      # @param options [Hash] Execution options
+      # @option options [Boolean] :stream_output Stream output in real-time (default: verbose mode)
+      # @option options [Boolean, String] :use_formatter Use output formatter (default: true)
       # @return [Result] Command execution result
-      def self.execute(command, args)
+      def self.execute(command, args, options = {})
         full_command = [command] + args
         command_string = full_command.join(' ')
 
         Utils::Logger.debug("Executing: #{command_string}")
 
-        stdout, stderr, status = Open3.capture3(*full_command)
+        # Determine if we should stream output (default to verbose mode)
+        stream_output = options.fetch(:stream_output, Utils::Logger.verbose)
+        use_formatter = options.fetch(:use_formatter, true)
+
+        # Execute with formatter if streaming
+        result_hash = Formatter.execute_with_formatting(
+          full_command,
+          stream_output: stream_output,
+          use_formatter: stream_output ? use_formatter : false
+        )
 
         result = Result.new(
-          success: status.success?,
-          stdout: stdout,
-          stderr: stderr,
-          exit_code: status.exitstatus,
+          success: result_hash[:success],
+          stdout: result_hash[:stdout],
+          stderr: result_hash[:stderr],
+          exit_code: result_hash[:exit_code],
           command: command_string
         )
 
         if result.failure?
           Utils::Logger.error("Command failed: #{command_string}")
           Utils::Logger.error("Exit code: #{result.exit_code}")
-          Utils::Logger.error("Error output: #{result.error_message}") unless result.error_message.empty?
+          # Only show error output if we didn't already stream it
+          unless stream_output
+            Utils::Logger.error("Error output: #{result.error_message}") unless result.error_message.empty?
+          end
         else
           Utils::Logger.debug("Command succeeded: #{command_string}")
         end

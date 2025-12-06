@@ -51,13 +51,50 @@ module XCFrameworkCLI
 
         OPTIONS:
       DESC
+      method_option :config,
+                    type: :string,
+                    aliases: '-c',
+                    desc: 'Path to configuration file (.yml or .json)'
+
+      method_option :project,
+                    type: :string,
+                    aliases: '-p',
+                    desc: 'Path to Xcode project (.xcodeproj or .xcworkspace)'
+
+      method_option :scheme,
+                    type: :string,
+                    aliases: '-s',
+                    desc: 'Xcode scheme name'
+
+      method_option :framework_name,
+                    type: :string,
+                    aliases: '-f',
+                    desc: 'Framework name (without .framework extension)'
+
+      method_option :output,
+                    type: :string,
+                    aliases: '-o',
+                    desc: 'Output directory for build artifacts',
+                    default: 'build'
+
+      method_option :platforms,
+                    type: :array,
+                    desc: 'Platforms to build (ios, ios-simulator)',
+                    default: %w[ios ios-simulator]
+
+      method_option :clean,
+                    type: :boolean,
+                    desc: 'Clean build artifacts before building',
+                    default: true
+
+      method_option :debug_symbols,
+                    type: :boolean,
+                    desc: 'Include debug symbols (dSYM files)',
+                    default: true
+
       def build
-        # Pass global options to the build command
-        Commands::Build.start(
-          ARGV[1..],
-          verbose: options[:verbose],
-          quiet: options[:quiet]
-        )
+        # Execute the build command directly
+        Commands::Build.execute(options)
       rescue XCFrameworkCLI::Error => e
         handle_error(e)
         exit(1)
@@ -117,7 +154,7 @@ module XCFrameworkCLI
 
       def handle_unexpected_error(error)
         Utils::Logger.error("Unexpected error: #{error.message}")
-        Utils::Logger.debug(error.backtrace.join("\n")) if Utils::Logger.verbose
+        warn error.backtrace.join("\n")
       end
     end
   end

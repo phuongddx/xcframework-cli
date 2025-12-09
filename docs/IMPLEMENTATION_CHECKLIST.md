@@ -21,7 +21,7 @@
 ## 🏗️ Phase 1: Foundation (Week 1)
 
 ### Day 1: Project Setup
-- [ ] Run `bundle gem xcframework-cli --test=rspec --ci=github --linter=rubocop`
+- [ ] Run `bundle gem xckit --test=rspec --ci=github --linter=rubocop`
 - [ ] Create directory structure (lib/xcframework_cli/*)
 - [ ] Set up RuboCop configuration
 - [ ] Set up RSpec configuration
@@ -47,7 +47,7 @@
 
 ### Day 6-7: CLI Skeleton
 - [ ] Implement basic `lib/xcframework_cli/cli.rb` with Thor
-- [ ] Implement `bin/xcframework-cli` executable
+- [ ] Implement `bin/xckit` executable
 - [ ] Add `--version` command
 - [ ] Add `--help` command
 - [ ] Add `validate` command
@@ -192,7 +192,7 @@
 
 ### Day 35: Gem Packaging & Release
 - [ ] Update gemspec with metadata
-- [ ] Build gem: `gem build xcframework-cli.gemspec`
+- [ ] Build gem: `gem build xckit.gemspec`
 - [ ] Test gem installation locally
 - [ ] Create CHANGELOG.md
 - [ ] Tag release in Git

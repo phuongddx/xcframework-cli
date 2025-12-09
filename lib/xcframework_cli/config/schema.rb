@@ -27,6 +27,12 @@ module XCFrameworkCLI
         arm64_32
       ].freeze
 
+      # Valid build configurations
+      VALID_CONFIGURATIONS = %w[
+        Debug
+        Release
+      ].freeze
+
       params do
         required(:project).hash do
           required(:name).filled(:string)
@@ -51,6 +57,8 @@ module XCFrameworkCLI
           optional(:clean_before_build).filled(:bool)
           optional(:verbose).filled(:bool)
           optional(:use_formatter).filled
+          optional(:configuration).filled(:string)
+          optional(:build_settings).hash
         end
 
         optional(:publishing).hash do
@@ -73,6 +81,12 @@ module XCFrameworkCLI
           archs.each do |arch|
             key.failure("invalid architecture: #{arch}") unless VALID_ARCHITECTURES.include?(arch)
           end
+        end
+      end
+
+      rule(build: :configuration) do
+        if key? && value
+          key.failure("must be 'Debug' or 'Release'") unless VALID_CONFIGURATIONS.include?(value)
         end
       end
     end

@@ -11,7 +11,9 @@ module XCFrameworkCLI
         parallel_builds: false,
         clean_before_build: true,
         verbose: false,
-        use_formatter: true
+        use_formatter: true,
+        configuration: 'Release',
+        build_settings: {}
       }.freeze
 
       # Default deployment targets for each platform

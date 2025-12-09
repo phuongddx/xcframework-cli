@@ -27,7 +27,7 @@ module XCFrameworkCLI
             raise FileNotFoundError.new(
               'No configuration file found',
               suggestions: [
-                "Run 'xcframework-cli init' to create a configuration file",
+                "Run 'xckit init' to create a configuration file",
                 'Create .xcframework.yml manually',
                 'Specify config path with --config option'
               ]
@@ -54,7 +54,7 @@ module XCFrameworkCLI
               suggestions: [
                 'Check the file path',
                 'Ensure the file exists',
-                "Run 'xcframework-cli init' to create a new config"
+                "Run 'xckit init' to create a new config"
               ]
             )
           end

@@ -16,6 +16,7 @@ module XCFrameworkCLI
       # @option options [String] :scheme Scheme name to build
       # @option options [String] :destination Build destination (e.g., "generic/platform=iOS")
       # @option options [String] :archive_path Path where archive will be created
+      # @option options [String] :configuration Build configuration (Debug or Release)
       # @option options [Hash] :build_settings Additional build settings (default: {})
       # @option options [String, nil] :derived_data_path Optional derived data path
       # @option options [Boolean, String] :use_formatter Use output formatter (default: true)
@@ -26,6 +27,7 @@ module XCFrameworkCLI
         args += ['-scheme', options[:scheme]]
         args += ['-destination', options[:destination]]
         args += ['-archivePath', options[:archive_path]]
+        args += ['-configuration', options[:configuration]] if options[:configuration]
         args += ['-derivedDataPath', options[:derived_data_path]] if options[:derived_data_path]
 
         # Add build settings

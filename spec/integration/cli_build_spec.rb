@@ -16,8 +16,8 @@ RSpec.describe 'CLI Build Integration', :integration do
   let(:project_path) { File.expand_path('../../Example/SwiftyBeaver/SwiftyBeaver.xcodeproj', __dir__) }
   let(:scheme) { 'SwiftyBeaver-Package' }
   let(:framework_name) { 'SwiftyBeaver' }
-  let(:output_dir) { Dir.mktmpdir('xcframework-cli-test') }
-  let(:cli_path) { File.expand_path('../../bin/xcframework-cli', __dir__) }
+  let(:output_dir) { Dir.mktmpdir('xckit-test') }
+  let(:cli_path) { File.expand_path('../../bin/xckit', __dir__) }
 
   after do
     FileUtils.rm_rf(output_dir)

@@ -1,0 +1,37 @@
+# Example: Build with Swift module interface verification disabled
+#
+# Use this configuration when you have dependencies with module interface issues
+# like AlignedCollectionViewFlowLayout or other third-party frameworks that
+# fail with "failed to verify module interface" errors.
+#
+# Common error this solves:
+#   "Type is not a member type of class"
+#   "failed to verify emitted module interface"
+
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms:
+      - ios
+      - ios-simulator
+    deployment_targets:
+      ios: "14.0"
+      ios-simulator: "14.0"
+
+build:
+  output_dir: build
+  clean_before_build: true
+  configuration: Release
+  verbose: true
+  use_formatter: true
+
+  # Workaround for module interface verification errors
+  build_settings:
+    # Skip Swift module interface verification
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    # Exclude Intel simulator (optional, speeds up builds)
+    EXCLUDED_ARCHS: "x86_64"

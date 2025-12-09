@@ -5,7 +5,7 @@ module XCFrameworkCLI
     # Archiver for creating platform-specific archives
     # Orchestrates archive creation using Platform and Xcodebuild classes
     class Archiver
-      attr_reader :project_path, :scheme, :output_dir, :derived_data_path
+      attr_reader :project_path, :scheme, :output_dir, :derived_data_path, :configuration, :build_settings
 
       # Initialize archiver
       #
@@ -13,11 +13,16 @@ module XCFrameworkCLI
       # @param scheme [String] Scheme name to build
       # @param output_dir [String] Output directory for archives
       # @param derived_data_path [String, nil] Optional derived data path
-      def initialize(project_path:, scheme:, output_dir:, derived_data_path: nil)
+      # @param configuration [String] Build configuration (Debug or Release)
+      # @param build_settings [Hash] Custom xcodebuild settings
+      def initialize(project_path:, scheme:, output_dir:, derived_data_path: nil, configuration: 'Release',
+                     build_settings: {})
         @project_path = project_path
         @scheme = scheme
         @output_dir = output_dir
         @derived_data_path = derived_data_path || File.join(output_dir, 'DerivedData')
+        @configuration = configuration
+        @build_settings = build_settings
       end
 
       # Build archive for a platform
@@ -39,10 +44,13 @@ module XCFrameworkCLI
         architectures = options[:architectures] || platform.valid_architectures
         deployment_target = options[:deployment_target] || platform.default_deployment_target
 
-        build_settings = platform.build_settings(
+        platform_build_settings = platform.build_settings(
           architectures: architectures,
           deployment_target: deployment_target
         )
+
+        # Merge custom build settings (custom settings take precedence)
+        merged_build_settings = platform_build_settings.merge(@build_settings)
 
         # Execute archive command
         archive_options = {
@@ -50,7 +58,8 @@ module XCFrameworkCLI
           scheme: scheme,
           destination: platform.destination,
           archive_path: archive_path,
-          build_settings: build_settings,
+          configuration: @configuration,
+          build_settings: merged_build_settings,
           derived_data_path: derived_data_path
         }
         archive_options[:use_formatter] = options[:use_formatter] if options.key?(:use_formatter)

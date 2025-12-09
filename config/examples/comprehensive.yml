@@ -80,6 +80,18 @@ build:
   xcframework_output: ../SDKs
   parallel_builds: true
   clean_before_build: true
+  configuration: Release  # Debug or Release
+  verbose: true
+  use_formatter: true
+
+  # Custom xcodebuild settings (optional)
+  build_settings:
+    # Disable module interface verification (for dependencies with issues)
+    # OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    # Exclude x86_64 simulator architecture
+    # EXCLUDED_ARCHS: "x86_64"
+    # Disable bitcode
+    # ENABLE_BITCODE: "NO"
 
 publishing:
   artifactory_url: https://artifactory.example.com/artifactory

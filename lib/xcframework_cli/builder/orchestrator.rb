@@ -162,7 +162,9 @@ module XCFrameworkCLI
         archiver = Archiver.new(
           project_path: config[:project_path],
           scheme: config[:scheme],
-          output_dir: config[:output_dir]
+          output_dir: config[:output_dir],
+          configuration: config[:configuration] || 'Release',
+          build_settings: config[:build_settings] || {}
         )
 
         build_options = {}

@@ -252,7 +252,7 @@ Xcodebuild::Wrapper.execute(
 ### Build Command Flow
 
 ```
-User runs: xcframework-cli build MySDK --platforms ios,macos
+User runs: xckit build MySDK --platforms ios,macos
                     │
                     ▼
             ┌───────────────┐

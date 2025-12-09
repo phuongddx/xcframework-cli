@@ -46,7 +46,7 @@
 ✅ **Performance**: Optional parallel builds  
 
 ### User Experience Benefits
-✅ **Interactive Setup**: `xcframework-cli init` wizard  
+✅ **Interactive Setup**: `xckit init` wizard  
 ✅ **Better Errors**: Clear messages with actionable suggestions  
 ✅ **Progress Indicators**: Visual feedback during builds  
 ✅ **Flexible Configuration**: YAML, JSON, or environment variables  
@@ -64,7 +64,7 @@
 
 ### Module Structure
 ```
-xcframework-cli/
+xckit/
 ├── CLI Layer          # Thor-based command interface
 ├── Config Layer       # YAML/JSON loading & validation
 ├── Platform Layer     # iOS, macOS, tvOS, watchOS, visionOS, Catalyst

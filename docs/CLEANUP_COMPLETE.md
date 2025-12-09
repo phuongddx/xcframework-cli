@@ -32,7 +32,7 @@
 ## 📁 Final Structure
 
 ```
-xcframework-cli/
+xckit/
 ├── README.md                         ✅ Updated - Entry point
 ├── README_OLD.md                     💾 Backup of original
 ├── QUICK_START_GUIDE.md              📖 Start here!

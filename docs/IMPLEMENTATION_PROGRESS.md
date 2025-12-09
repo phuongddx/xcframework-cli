@@ -33,7 +33,7 @@
 
 #### 2. Core Files ✅
 - **Gemfile** - Dependencies management
-- **xcframework-cli.gemspec** - Gem specification
+- **xckit.gemspec** - Gem specification
 - **Rakefile** - Task automation
 - **.rubocop.yml** - Linting configuration
 - **.rspec** - Test configuration
@@ -98,7 +98,7 @@
 
 ### Core Files (9)
 1. Gemfile
-2. xcframework-cli.gemspec
+2. xckit.gemspec
 3. Rakefile
 4. .rubocop.yml
 5. .rspec

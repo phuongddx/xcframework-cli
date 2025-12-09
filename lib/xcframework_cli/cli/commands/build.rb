@@ -72,6 +72,9 @@ module XCFrameworkCLI
                            Pathname.new(config_output).absolute? ? config_output : File.join(config_dir, config_output)
                          end
 
+            # Extract deployment target for the first platform (simple approach for single-platform builds)
+            deployment_target = framework[:deployment_targets]&.values&.first
+
             {
               project_path: project_path,
               scheme: framework[:scheme],
@@ -81,6 +84,9 @@ module XCFrameworkCLI
               clean: config[:build][:clean_before_build].nil? ? options[:clean] : config[:build][:clean_before_build],
               include_debug_symbols: options[:debug_symbols],
               use_formatter: config[:build][:use_formatter],
+              configuration: config[:build][:configuration] || 'Release',
+              build_settings: config[:build][:build_settings] || {},
+              deployment_target: deployment_target,
               _raw_config: config
             }
           end
@@ -114,7 +120,7 @@ module XCFrameworkCLI
               suggestions: [
                 'Provide all required arguments via command-line options',
                 'Or use --config to load from a configuration file',
-                'Run xcframework-cli help build for more information'
+                'Run xckit help build for more information'
               ]
             )
           end

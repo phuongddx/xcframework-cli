@@ -38,7 +38,7 @@ module XCFrameworkCLI
 
         Build using command-line options:
 
-          $ xcframework-cli build \\
+          $ xckit build \\
               --project MySDK.xcodeproj \\
               --scheme MySDK \\
               --framework-name MySDK \\
@@ -47,7 +47,7 @@ module XCFrameworkCLI
 
         Build using a configuration file:
 
-          $ xcframework-cli build --config .xcframework.yml
+          $ xckit build --config .xcframework.yml
 
         OPTIONS:
       DESC
@@ -120,7 +120,7 @@ module XCFrameworkCLI
           puts 'XCFramework CLI - Build XCFrameworks for Apple platforms'
           puts
           puts 'USAGE:'
-          puts '  xcframework-cli COMMAND [OPTIONS]'
+          puts '  xckit COMMAND [OPTIONS]'
           puts
           puts 'COMMANDS:'
           puts '  build       Build XCFramework for iOS platforms'
@@ -131,7 +131,7 @@ module XCFrameworkCLI
           puts '  -v, --verbose    Enable verbose output'
           puts '  -q, --quiet      Suppress output'
           puts
-          puts 'Run "xcframework-cli help COMMAND" for more information on a command.'
+          puts 'Run "xckit help COMMAND" for more information on a command.'
           puts
         end
       end

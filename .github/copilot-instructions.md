@@ -103,7 +103,7 @@ All custom errors inherit from `XCFrameworkCLI::Error` which supports a `suggest
 ```ruby
 raise ValidationError.new(
   "Invalid platform: #{platform}",
-  suggestions: ["Use 'ios' or 'ios-simulator'", "Run 'xcframework-cli platforms' to see all options"]
+  suggestions: ["Use 'ios' or 'ios-simulator'", "Run 'xckit platforms' to see all options"]
 )
 ```
 

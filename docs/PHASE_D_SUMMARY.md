@@ -127,7 +127,7 @@ can't modify frozen Thor::CoreExt::HashWithIndifferentAccess
 
 **Example Command**:
 ```bash
-./bin/xcframework-cli build \
+./bin/xckit build \
   --project Example/SwiftyBeaver/SwiftyBeaver.xcodeproj \
   --scheme SwiftyBeaver-Package \
   --framework-name SwiftyBeaver \
@@ -194,7 +194,7 @@ build:
 
 **Example Command**:
 ```bash
-./bin/xcframework-cli build \
+./bin/xckit build \
   --config Example/SwiftyBeaver/.xcframework.yml \
   --output /tmp/test-build-config \
   --debug-symbols
@@ -362,7 +362,7 @@ The README should include:
 2. **Installation**
    - Clone repository
    - Run `bundle install`
-   - Verify installation with `./bin/xcframework-cli --version`
+   - Verify installation with `./bin/xckit --version`
 
 3. **Quick Start Guide**
    - Simple example with command-line arguments

@@ -79,10 +79,10 @@ xcode-select --install
 ### Step 1: Initialize Project (5 minutes)
 ```bash
 # Create gem structure
-bundle gem xcframework-cli --test=rspec --ci=github --linter=rubocop
+bundle gem xckit --test=rspec --ci=github --linter=rubocop
 
 # Navigate to project
-cd xcframework-cli
+cd xckit
 
 # Install dependencies
 bundle install

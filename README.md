@@ -78,7 +78,7 @@ cd xcframework-cli
 bundle install
 
 # Verify installation
-./bin/xcframework-cli version
+./bin/xckit version
 ```
 
 ### Optional: Install Formatters
@@ -102,7 +102,7 @@ gem install xcpretty
 Build an XCFramework with command-line arguments:
 
 ```bash
-./bin/xcframework-cli build \
+./bin/xckit build \
   --project MySDK.xcodeproj \
   --scheme MySDK \
   --framework-name MySDK \
@@ -138,7 +138,7 @@ build:
 Build with config:
 
 ```bash
-./bin/xcframework-cli build --config .xcframework.yml
+./bin/xckit build --config .xcframework.yml
 ```
 
 ### 3. See Build Logs
@@ -146,7 +146,7 @@ Build with config:
 Enable verbose mode to see real-time xcodebuild output:
 
 ```bash
-./bin/xcframework-cli build \
+./bin/xckit build \
   --config .xcframework.yml \
   --verbose
 ```
@@ -168,7 +168,7 @@ Enable verbose mode to see real-time xcodebuild output:
 ### Command Line Mode
 
 ```bash
-./bin/xcframework-cli build [OPTIONS]
+./bin/xckit build [OPTIONS]
 ```
 
 #### Required Options
@@ -189,7 +189,7 @@ Enable verbose mode to see real-time xcodebuild output:
 #### Example
 
 ```bash
-./bin/xcframework-cli build \
+./bin/xckit build \
   --project Example/SwiftyBeaver/SwiftyBeaver.xcodeproj \
   --scheme SwiftyBeaver-Package \
   --framework-name SwiftyBeaver \
@@ -245,7 +245,7 @@ build:
 Then build:
 
 ```bash
-./bin/xcframework-cli build --config .xcframework.yml
+./bin/xckit build --config .xcframework.yml
 ```
 
 See [Configuration](#configuration) for all available options.
@@ -257,7 +257,7 @@ See [Configuration](#configuration) for all available options.
 #### Enable via Command Line
 
 ```bash
-./bin/xcframework-cli build --config .xcframework.yml --verbose
+./bin/xckit build --config .xcframework.yml --verbose
 ```
 
 #### Enable via Config File

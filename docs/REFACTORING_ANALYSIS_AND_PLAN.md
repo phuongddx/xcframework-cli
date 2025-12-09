@@ -2,7 +2,7 @@
 ## Generic Ruby-Based XCFramework Builder
 
 **Date**: December 6, 2025  
-**Project**: `/Users/ddphuong/Projects/xcframework-cli`  
+**Project**: `/Users/ddphuong/Projects/xckit`  
 **Objective**: Transform existing Bash scripts into a generic, reusable Ruby CLI tool for creating XCFrameworks
 
 ---
@@ -14,7 +14,7 @@
 The project currently consists of **Bash scripts** (~1,653 lines) with comprehensive documentation:
 
 ```
-xcframework-cli/
+xckit/
 ├── Bash Scripts (Production)
 │   ├── config.sh                   (164 lines) - Centralized configuration
 │   ├── create-xcframework.sh       (625 lines) - Core build logic
@@ -637,7 +637,7 @@ end
 
 **Tasks**:
 1. ✅ Create Ruby project structure
-   - Initialize gem with `bundle gem xcframework-cli`
+   - Initialize gem with `bundle gem xckit`
    - Set up directory structure
    - Configure RuboCop and RSpec
 
@@ -837,7 +837,7 @@ end
 
 **Executable** (bin/):
 ```
-✅ xcframework-cli                      # Main executable
+✅ xckit                      # Main executable
 ```
 
 **Tests** (spec/):
@@ -882,7 +882,7 @@ end
 ```
 ✅ Gemfile                              # Dependencies
 ✅ Gemfile.lock                         # Locked dependencies
-✅ xcframework-cli.gemspec              # Gem specification
+✅ xckit.gemspec              # Gem specification
 ✅ Rakefile                             # Rake tasks
 ✅ .rubocop.yml                         # RuboCop configuration
 ✅ .rspec                               # RSpec configuration
@@ -994,10 +994,10 @@ build:
 #### Step 1: Project Initialization
 ```bash
 # Create gem structure
-bundle gem xcframework-cli --test=rspec --ci=github --linter=rubocop
+bundle gem xckit --test=rspec --ci=github --linter=rubocop
 
 # Navigate to project
-cd xcframework-cli
+cd xckit
 
 # Install dependencies
 bundle install
@@ -1052,7 +1052,7 @@ mv *.sh legacy/
 
 **Priority 6: CLI**
 23. `lib/xcframework_cli/cli.rb` - Thor CLI
-24. `bin/xcframework-cli` - Executable
+24. `bin/xckit` - Executable
 
 #### Step 4: Write Tests (Parallel with Implementation)
 ```bash
@@ -1110,26 +1110,26 @@ bundle exec rubocop
 bundle exec rspec --format documentation
 
 # Integration test
-bundle exec bin/xcframework-cli build MySDK --platforms ios,ios-simulator
+bundle exec bin/xckit build MySDK --platforms ios,ios-simulator
 ```
 
 #### Step 9: Gem Packaging
 ```bash
 # Build gem
-gem build xcframework-cli.gemspec
+gem build xckit.gemspec
 
 # Install locally
-gem install xcframework-cli-0.1.0.gem
+gem install xckit-0.1.0.gem
 
 # Test installed gem
-xcframework-cli --version
-xcframework-cli --help
+xckit --version
+xckit --help
 ```
 
 #### Step 10: Publishing
 ```bash
 # Publish to RubyGems (when ready)
-gem push xcframework-cli-0.1.0.gem
+gem push xckit-0.1.0.gem
 ```
 
 ---
@@ -1235,7 +1235,7 @@ end
 ### 9.1 Command Structure
 
 ```bash
-xcframework-cli [COMMAND] [OPTIONS]
+xckit [COMMAND] [OPTIONS]
 
 Commands:
   build       Build XCFrameworks
@@ -1257,7 +1257,7 @@ Global Options:
 ### 9.2 Build Command
 
 ```bash
-xcframework-cli build [FRAMEWORK] [OPTIONS]
+xckit build [FRAMEWORK] [OPTIONS]
 
 Arguments:
   FRAMEWORK           Framework name (optional, builds all if not specified)
@@ -1272,16 +1272,16 @@ Options:
   --output DIR        Custom output directory
 
 Examples:
-  xcframework-cli build                           # Build all frameworks
-  xcframework-cli build MySDK                     # Build specific framework
-  xcframework-cli build MySDK --platforms ios     # Build for iOS only
-  xcframework-cli build --no-clean --parallel     # Fast incremental build
+  xckit build                           # Build all frameworks
+  xckit build MySDK                     # Build specific framework
+  xckit build MySDK --platforms ios     # Build for iOS only
+  xckit build --no-clean --parallel     # Fast incremental build
 ```
 
 ### 9.3 Init Command (Interactive Setup)
 
 ```bash
-xcframework-cli init [OPTIONS]
+xckit init [OPTIONS]
 
 Options:
   --interactive       Interactive mode (default)
@@ -1298,14 +1298,14 @@ Interactive Prompts:
   7. Publishing setup? (optional)
 
 Example:
-  xcframework-cli init
+  xckit init
   # Generates .xcframework.yml with user input
 ```
 
 ### 9.4 Publish Command
 
 ```bash
-xcframework-cli publish [FRAMEWORK] [OPTIONS]
+xckit publish [FRAMEWORK] [OPTIONS]
 
 Arguments:
   FRAMEWORK           Framework name (optional, publishes all if not specified)
@@ -1324,7 +1324,7 @@ Environment Variables:
   SLACK_WEBHOOK_URL (optional)
 
 Example:
-  xcframework-cli publish MySDK --version 1.2.0
+  xckit publish MySDK --version 1.2.0
 ```
 
 ---
@@ -1370,7 +1370,7 @@ begin
 rescue ConfigError => e
   logger.error("Configuration error: #{e.message}")
   logger.info("Suggestions:")
-  logger.info("  1. Run 'xcframework-cli init' to create a config file")
+  logger.info("  1. Run 'xckit init' to create a config file")
   logger.info("  2. Check .xcframework.yml syntax")
   logger.info("  3. See examples: config/examples/")
   exit 1
@@ -1483,32 +1483,32 @@ end
 # Old Bash way (still works)
 export XCODE_PROJECT_NAME="MyProject"
 export FRAMEWORK_NAMES="MySDK"
-xcframework-cli build
+xckit build
 
 # New Ruby way (preferred)
-xcframework-cli build --config .xcframework.yml
+xckit build --config .xcframework.yml
 ```
 
 ### 12.2 Migration Steps for Users
 
 **Step 1: Install Ruby gem**
 ```bash
-gem install xcframework-cli
+gem install xckit
 ```
 
 **Step 2: Generate config from environment**
 ```bash
 # If you have environment variables set
-xcframework-cli init --from-env
+xckit init --from-env
 
 # Or interactive
-xcframework-cli init
+xckit init
 ```
 
 **Step 3: Test build**
 ```bash
-xcframework-cli build --dry-run
-xcframework-cli build
+xckit build --dry-run
+xckit build
 ```
 
 **Step 4: Update CI/CD**
@@ -1517,7 +1517,7 @@ xcframework-cli build
 ./debug.sh MySDK --simulator
 
 # New
-xcframework-cli build MySDK --platforms ios-simulator
+xckit build MySDK --platforms ios-simulator
 ```
 
 ### 12.3 Deprecation Timeline
@@ -1577,8 +1577,8 @@ xcframework-cli build MySDK --platforms ios-simulator
 
 2. **Set Up Ruby Project** (Day 1)
    ```bash
-   bundle gem xcframework-cli --test=rspec
-   cd xcframework-cli
+   bundle gem xckit --test=rspec
+   cd xckit
    bundle install
    ```
 

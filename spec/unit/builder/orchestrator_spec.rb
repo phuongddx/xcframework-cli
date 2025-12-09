@@ -119,7 +119,9 @@ RSpec.describe XCFrameworkCLI::Builder::Orchestrator do
       expect(XCFrameworkCLI::Builder::Archiver).to have_received(:new).with(
         project_path: 'MyApp.xcodeproj',
         scheme: 'MySDK',
-        output_dir: 'build'
+        output_dir: 'build',
+        configuration: 'Release',
+        build_settings: {}
       )
     end
 

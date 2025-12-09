@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
     LICENSE
   ]
   spec.bindir        = 'bin'
-  spec.executables   = ['xcframework-cli']
+  spec.executables   = ['xckit']
   spec.require_paths = ['lib']
 
   # Runtime dependencies

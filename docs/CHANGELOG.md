@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Example configuration files
 
 ### Changed
+- **BREAKING**: Renamed CLI command from `xcframework-cli` to `xckit` for brevity
 - Migrated from Bash scripts to Ruby
 - Improved error messages with actionable suggestions
 - Added comprehensive validation
@@ -34,6 +35,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test infrastructure
 - Documentation
 
-[Unreleased]: https://github.com/aavn/xcframework-cli/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/aavn/xcframework-cli/releases/tag/v0.1.0
+[Unreleased]: https://github.com/aavn/xckit/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/aavn/xckit/releases/tag/v0.1.0
 

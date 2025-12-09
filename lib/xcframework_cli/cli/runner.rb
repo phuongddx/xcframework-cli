@@ -2,6 +2,7 @@
 
 require 'thor'
 require_relative 'commands/build'
+require_relative 'commands/spm'
 require_relative '../version'
 require_relative '../utils/logger'
 
@@ -103,6 +104,29 @@ module XCFrameworkCLI
         exit(1)
       end
 
+      desc 'spm SUBCOMMAND', 'Swift Package Manager commands'
+      long_desc <<~DESC
+        Build XCFrameworks from Swift Packages.
+
+        SUBCOMMANDS:
+          build    Build XCFramework from Swift Package
+
+        EXAMPLES:
+
+          Build from current directory:
+            $ xckit spm build
+
+          Build specific targets:
+            $ xckit spm build MyLibrary NetworkKit
+
+          Use configuration file:
+            $ xckit spm build --config spm.yml
+
+          Specify platforms:
+            $ xckit spm build --platforms ios macos tvos
+      DESC
+      subcommand 'spm', Commands::SPM
+
       desc 'version', 'Display version information'
       def version
         puts "XCFramework CLI v#{XCFrameworkCLI::VERSION}"
@@ -123,7 +147,8 @@ module XCFrameworkCLI
           puts '  xckit COMMAND [OPTIONS]'
           puts
           puts 'COMMANDS:'
-          puts '  build       Build XCFramework for iOS platforms'
+          puts '  build       Build XCFramework from Xcode project'
+          puts '  spm         Build XCFramework from Swift Package'
           puts '  version     Display version information'
           puts '  help        Display this help message'
           puts

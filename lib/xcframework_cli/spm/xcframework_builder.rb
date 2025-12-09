@@ -216,6 +216,14 @@ module XCFrameworkCLI
           end
         end
 
+        # Copy resource bundles from first framework (all architectures share same resources)
+        Dir.glob(File.join(first_framework, '*.bundle')).each do |bundle_path|
+          bundle_name = File.basename(bundle_path)
+          dst = File.join(combined_framework_path, bundle_name)
+          FileUtils.cp_r(bundle_path, dst)
+          Utils::Logger.debug("  Copied resource bundle: #{bundle_name}")
+        end
+
         # Use lipo to combine binaries
         binary_name = module_name
         combined_binary = File.join(combined_framework_path, binary_name)

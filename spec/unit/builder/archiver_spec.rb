@@ -52,6 +52,38 @@ RSpec.describe XCFrameworkCLI::Builder::Archiver do
       )
       expect(custom_archiver.derived_data_path).to eq('custom/path')
     end
+
+    it 'sets default configuration to Release' do
+      expect(archiver.configuration).to eq('Release')
+    end
+
+    it 'accepts custom configuration' do
+      debug_archiver = described_class.new(
+        project_path: project_path,
+        scheme: scheme,
+        output_dir: output_dir,
+        configuration: 'Debug'
+      )
+      expect(debug_archiver.configuration).to eq('Debug')
+    end
+
+    it 'sets default build_settings to empty hash' do
+      expect(archiver.build_settings).to eq({})
+    end
+
+    it 'accepts custom build_settings' do
+      custom_settings = {
+        'OTHER_SWIFT_FLAGS' => '-no-verify-emitted-module-interface',
+        'EXCLUDED_ARCHS' => 'x86_64'
+      }
+      custom_archiver = described_class.new(
+        project_path: project_path,
+        scheme: scheme,
+        output_dir: output_dir,
+        build_settings: custom_settings
+      )
+      expect(custom_archiver.build_settings).to eq(custom_settings)
+    end
   end
 
   describe '#build_archive' do
@@ -111,6 +143,51 @@ RSpec.describe XCFrameworkCLI::Builder::Archiver do
         architectures: ['arm64'],
         deployment_target: '15.0'
       )
+    end
+
+    it 'passes configuration to xcodebuild' do
+      debug_archiver = described_class.new(
+        project_path: project_path,
+        scheme: scheme,
+        output_dir: output_dir,
+        configuration: 'Debug'
+      )
+
+      expect(XCFrameworkCLI::Xcodebuild::Wrapper).to receive(:execute_archive).with(
+        hash_including(configuration: 'Debug')
+      )
+
+      debug_archiver.build_archive('ios')
+    end
+
+    it 'merges custom build_settings with platform settings' do
+      custom_archiver = described_class.new(
+        project_path: project_path,
+        scheme: scheme,
+        output_dir: output_dir,
+        build_settings: {
+          'OTHER_SWIFT_FLAGS' => '-no-verify-emitted-module-interface',
+          'EXCLUDED_ARCHS' => 'x86_64'
+        }
+      )
+
+      allow(ios_platform).to receive(:build_settings).and_return({
+        'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES',
+        'ARCHS' => 'arm64'
+      })
+
+      expect(XCFrameworkCLI::Xcodebuild::Wrapper).to receive(:execute_archive).with(
+        hash_including(
+          build_settings: {
+            'BUILD_LIBRARY_FOR_DISTRIBUTION' => 'YES',
+            'ARCHS' => 'arm64',
+            'OTHER_SWIFT_FLAGS' => '-no-verify-emitted-module-interface',
+            'EXCLUDED_ARCHS' => 'x86_64'
+          }
+        )
+      )
+
+      custom_archiver.build_archive('ios')
     end
 
     it 'returns failure result when build fails' do

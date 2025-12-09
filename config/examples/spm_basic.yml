@@ -1,0 +1,32 @@
+# Basic SPM XCFramework build configuration
+# Builds XCFrameworks from a Swift Package
+
+spm:
+  # Path to directory containing Package.swift
+  package_dir: "."
+
+  # Target names to build (optional - defaults to all library targets)
+  targets:
+    - "MyLibrary"
+
+  # Platforms to build for (optional - defaults to ios, ios-simulator)
+  platforms:
+    - ios
+    - ios-simulator
+
+  # Enable library evolution (optional - defaults to true)
+  # Set to true for stable module interfaces
+  library_evolution: true
+
+  # Minimum OS version (optional - auto-detected from Package.swift)
+  version: "15.0"
+
+build:
+  # Output directory for XCFrameworks
+  output_dir: "./build"
+
+  # Build configuration: Debug or Release
+  configuration: "Release"
+
+  # Verbose output
+  verbose: false

@@ -1,0 +1,19 @@
+# Debug SPM XCFramework build configuration
+# For development and testing
+
+spm:
+  package_dir: "."
+
+  # Optionally specify targets (leave empty for all library targets)
+  # targets: []
+
+  platforms:
+    - ios-simulator  # Simulator only for faster debug builds
+
+  # Disable library evolution for faster debug builds
+  library_evolution: false
+
+build:
+  output_dir: "./build/debug"
+  configuration: "Debug"
+  verbose: true

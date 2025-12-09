@@ -1,0 +1,39 @@
+# Multi-platform SPM XCFramework build configuration
+# Builds XCFrameworks for multiple Apple platforms
+
+spm:
+  package_dir: "."
+
+  # Build specific targets
+  targets:
+    - "CoreLibrary"
+    - "NetworkingKit"
+
+  # Build for all Apple platforms
+  platforms:
+    - ios
+    - ios-simulator
+    - macos
+    - tvos
+    - tvos-simulator
+    - watchos
+    - watchos-simulator
+    - visionos
+    - visionos-simulator
+
+  # Enable library evolution for binary distribution
+  library_evolution: true
+
+  # Platform version
+  version: "15.0"
+
+build:
+  output_dir: "./xcframeworks"
+  configuration: "Release"
+  verbose: true
+
+# Optional: Publishing configuration
+# publishing:
+#   artifactory_url: "https://your-artifactory.com"
+#   package_scope: "com.yourcompany"
+#   version: "1.0.0"

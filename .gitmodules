@@ -1,0 +1,3 @@
+[submodule "Example/epost-ios-theme-ui"]
+	path = Example/epost-ios-theme-ui
+	url = git@github.com:ub-post-app/epost-ios-theme-ui.git

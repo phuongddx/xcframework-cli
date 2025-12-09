@@ -34,12 +34,14 @@ module XCFrameworkCLI
       ].freeze
 
       params do
-        required(:project).hash do
+        # Xcode project configuration (optional if using SPM)
+        optional(:project).hash do
           required(:name).filled(:string)
           required(:xcode_project).filled(:string)
         end
 
-        required(:frameworks).array(:hash) do
+        # Frameworks configuration for Xcode projects (optional if using SPM)
+        optional(:frameworks).array(:hash) do
           required(:name).filled(:string)
           required(:scheme).filled(:string)
           required(:platforms).array(:string)
@@ -50,6 +52,16 @@ module XCFrameworkCLI
           optional(:resource_accessor_template).filled(:string)
         end
 
+        # Swift Package Manager configuration
+        optional(:spm).hash do
+          required(:package_dir).filled(:string)
+          optional(:targets).array(:string)
+          optional(:platforms).array(:string)
+          optional(:library_evolution).filled(:bool)
+          optional(:version).filled(:string)
+        end
+
+        # Build configuration (shared between Xcode and SPM)
         optional(:build).hash do
           optional(:output_dir).filled(:string)
           optional(:xcframework_output).filled(:string)
@@ -70,16 +82,36 @@ module XCFrameworkCLI
         end
       end
 
-      rule('frameworks').each do
-        key.failure('must have at least one platform') if value[:platforms].empty?
+      # Validate that either project/frameworks OR spm is provided
+      rule(:project, :frameworks, :spm) do
+        has_xcode = values[:project] && values[:frameworks]
+        has_spm = values[:spm]
 
-        value[:platforms]&.each do |platform|
-          key.failure("invalid platform: #{platform}") unless VALID_PLATFORMS.include?(platform)
+        if !has_xcode && !has_spm
+          key.failure('must specify either project/frameworks (for Xcode) or spm (for Swift Package Manager)')
         end
+      end
 
-        value[:architectures]&.each_value do |archs|
-          archs.each do |arch|
-            key.failure("invalid architecture: #{arch}") unless VALID_ARCHITECTURES.include?(arch)
+      rule('frameworks').each do
+        if value
+          key.failure('must have at least one platform') if value[:platforms].empty?
+
+          value[:platforms]&.each do |platform|
+            key.failure("invalid platform: #{platform}") unless VALID_PLATFORMS.include?(platform)
+          end
+
+          value[:architectures]&.each_value do |archs|
+            archs.each do |arch|
+              key.failure("invalid architecture: #{arch}") unless VALID_ARCHITECTURES.include?(arch)
+            end
+          end
+        end
+      end
+
+      rule(spm: :platforms) do
+        if values[:spm] && values[:spm][:platforms]
+          values[:spm][:platforms].each do |platform|
+            key.failure("invalid platform: #{platform}") unless VALID_PLATFORMS.include?(platform)
           end
         end
       end

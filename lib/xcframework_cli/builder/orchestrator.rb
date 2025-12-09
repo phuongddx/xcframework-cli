@@ -9,7 +9,7 @@ module XCFrameworkCLI
 
       # Initialize orchestrator
       #
-      # @param config [Hash] Build configuration
+      # @param config [Hash] Build configuration (optional for SPM builds)
       # @option config [String] :project_path Path to .xcodeproj file
       # @option config [String] :scheme Scheme name to build
       # @option config [String] :framework_name Framework name
@@ -18,8 +18,8 @@ module XCFrameworkCLI
       # @option config [Boolean] :clean Clean before build (default: true)
       # @option config [Boolean] :include_debug_symbols Include dSYM files (default: true)
       # @option config [String] :deployment_target Deployment target version
-      def initialize(config)
-        @config = validate_config(config)
+      def initialize(config = {})
+        @config = config.empty? ? {} : validate_config(config)
       end
 
       # Execute the complete build process
@@ -199,6 +199,121 @@ module XCFrameworkCLI
         return 'ios-simulator' if path.include?('-iOS-Simulator.xcarchive')
 
         'unknown'
+      end
+
+      public
+
+      # Build XCFramework from Swift Package Manager (SPM)
+      #
+      # @param spm_config [Hash] SPM build configuration
+      # @option spm_config [String] :package_dir Path to Package.swift directory
+      # @option spm_config [Array<String>] :targets Target names to build
+      # @option spm_config [Array<String>] :platforms Platform identifiers (default: ['ios', 'ios-simulator'])
+      # @option spm_config [String] :output_dir Output directory
+      # @option spm_config [String] :configuration Build configuration (default: 'release')
+      # @option spm_config [Boolean] :library_evolution Enable library evolution (default: true)
+      # @option spm_config [String] :version Platform version
+      # @return [Hash] Build result with :success, :xcframework_paths, :errors
+      def spm_build(spm_config)
+        result = {
+          success: false,
+          xcframework_paths: [],
+          errors: [],
+          targets_completed: []
+        }
+
+        begin
+          # Step 1: Validate Package.swift exists
+          validate_spm_package(spm_config[:package_dir])
+
+          # Step 2: Load package descriptor
+          package = SPM::Package.new(spm_config[:package_dir])
+          targets = spm_config[:targets] || package.library_targets.map(&:name)
+
+          if targets.empty?
+            result[:errors] << 'No targets specified for build'
+            return result
+          end
+
+          Utils::Logger.info("Building #{targets.length} SPM target(s)...")
+
+          # Step 3: Build each target
+          targets.each_with_index do |target_name, index|
+            Utils::Logger.info("[#{index + 1}/#{targets.length}] Building target: #{target_name}")
+
+            # Verify target exists
+            target = package.target(target_name)
+            unless target
+              Utils::Logger.warning("Target '#{target_name}' not found in package, skipping...")
+              next
+            end
+
+            # Skip non-library targets
+            unless target.library?
+              Utils::Logger.warning("Target '#{target_name}' is not a library target, skipping...")
+              next
+            end
+
+            # Step 3a: Determine SDKs from platforms
+            platforms = spm_config[:platforms] || %w[ios ios-simulator]
+            version = spm_config[:version] || package.platform_version('ios')
+
+            # Step 3b: Build XCFramework using XCFrameworkBuilder
+            xcf_result = SPM::XCFrameworkBuilder.build_for_platforms(
+              target: target_name,
+              platforms: platforms,
+              package_dir: spm_config[:package_dir],
+              output_dir: spm_config[:output_dir],
+              configuration: spm_config[:configuration] || 'release',
+              library_evolution: spm_config.fetch(:library_evolution, true),
+              version: version
+            )
+
+            if xcf_result[:success]
+              result[:xcframework_paths] << xcf_result[:xcframework_path]
+              result[:targets_completed] << target_name
+              Utils::Logger.success("✓ XCFramework created: #{xcf_result[:xcframework_path]}")
+            else
+              error_msg = "Target '#{target_name}' failed: #{xcf_result[:errors].join(', ')}"
+              result[:errors] << error_msg
+              Utils::Logger.error("✗ #{error_msg}")
+            end
+          end
+
+          # Mark success if at least one target succeeded
+          result[:success] = !result[:xcframework_paths].empty?
+
+          if result[:success]
+            Utils::Logger.success("Build completed! Created #{result[:xcframework_paths].length} XCFramework(s)")
+          else
+            Utils::Logger.error('All targets failed to build')
+          end
+
+          result
+        rescue StandardError => e
+          Utils::Logger.error("SPM build failed: #{e.message}")
+          result[:errors] << e.message
+          result
+        end
+      end
+
+      private
+
+      # Validate SPM package directory
+      #
+      # @param package_dir [String] Package directory path
+      # @raise [ValidationError] if Package.swift not found
+      def validate_spm_package(package_dir)
+        package_swift = File.join(package_dir, 'Package.swift')
+        return if File.exist?(package_swift)
+
+        raise ValidationError.new(
+          "No Package.swift found in #{package_dir}",
+          suggestions: [
+            'Ensure you are in a Swift Package directory',
+            'Check the package_dir path in your configuration'
+          ]
+        )
       end
     end
   end

@@ -77,6 +77,36 @@ module XCFrameworkCLI
         targets.any? { |t| t.name == name }
       end
 
+      # Get resource bundle name for target
+      #
+      # @param target_name [String] Target name
+      # @return [String] Resource bundle name (format: PackageName_TargetName)
+      def resource_bundle_name(target_name)
+        "#{name}_#{target_name}"
+      end
+
+      # Get resource bundle path for target in build products
+      #
+      # @param target_name [String] Target name
+      # @param sdk_triple [String] SDK triple (e.g., 'arm64-apple-ios-simulator')
+      # @param configuration [String] Build configuration ('debug' or 'release')
+      # @return [String] Path to resource bundle
+      def resource_bundle_path(target_name, sdk_triple:, configuration: 'release')
+        bundle_name = resource_bundle_name(target_name)
+        File.join(package_dir, '.build', sdk_triple, configuration, "#{bundle_name}.bundle")
+      end
+
+      # Check if target has resource bundle in build products
+      #
+      # @param target_name [String] Target name
+      # @param sdk_triple [String] SDK triple
+      # @param configuration [String] Build configuration
+      # @return [Boolean] true if resource bundle exists
+      def has_resource_bundle?(target_name, sdk_triple:, configuration: 'release')
+        bundle_path = resource_bundle_path(target_name, sdk_triple: sdk_triple, configuration: configuration)
+        File.directory?(bundle_path)
+      end
+
       private
 
       # Validate package directory
@@ -153,6 +183,7 @@ module XCFrameworkCLI
             path: target_data['path'],
             sources: target_data['sources'] || [],
             dependencies: target_data['dependencies'] || [],
+            resources: target_data['resources'] || [],
             package: self
           )
         end
@@ -188,7 +219,7 @@ module XCFrameworkCLI
 
       # Target representation
       class Target
-        attr_reader :name, :type, :path, :sources, :dependencies, :package
+        attr_reader :name, :type, :path, :sources, :dependencies, :resources, :package
 
         # Target type constants
         TYPE_REGULAR = 'regular'
@@ -205,13 +236,15 @@ module XCFrameworkCLI
         # @param path [String, nil] Target path
         # @param sources [Array<String>] Source files
         # @param dependencies [Array] Target dependencies
+        # @param resources [Array] Resource declarations
         # @param package [Package] Parent package
-        def initialize(name:, type:, path: nil, sources: [], dependencies: [], package: nil)
+        def initialize(name:, type:, path: nil, sources: [], dependencies: [], resources: [], package: nil)
           @name = name
           @type = type
           @path = path
           @sources = sources
           @dependencies = dependencies
+          @resources = resources
           @package = package
         end
 
@@ -255,6 +288,13 @@ module XCFrameworkCLI
         # @return [Boolean] true if plugin target
         def plugin?
           type == TYPE_PLUGIN
+        end
+
+        # Check if target declares resources in Package.swift
+        #
+        # @return [Boolean] true if target has resources declared
+        def has_resources?
+          !resources.empty?
         end
 
         # Get module name (C99-compatible identifier)

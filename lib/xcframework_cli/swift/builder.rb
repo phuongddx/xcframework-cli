@@ -36,6 +36,8 @@ module XCFrameworkCLI
         result = execute_command(cmd)
 
         if result[:status].success?
+          # Swift build creates directories using triple WITHOUT version
+          # even though the command uses triple WITH version
           build_dir = File.join(package_dir, '.build', sdk.triple, configuration)
           {
             success: true,
@@ -76,7 +78,8 @@ module XCFrameworkCLI
       # @return [String] Path to .build directory with .o files
       def object_files_dir(module_name: nil)
         module_name ||= target
-        File.join(products_dir, "#{module_name}.build")
+        c99_module_name = module_name.gsub(/[^a-zA-Z0-9_]/, '_')
+        File.join(products_dir, "#{c99_module_name}.build")
       end
 
       private

@@ -85,11 +85,18 @@ module XCFrameworkCLI
         FileUtils.mkdir_p(File.dirname(output_path))
         FileUtils.mkdir_p(output_path)
 
+        # IMPORTANT: Override resource accessor BEFORE creating binary
+        # This ensures the .o file is included in libtool
+        override_resource_bundle_accessor if has_resource_bundle?
+
         # Create framework components
         create_framework_binary
         create_info_plist
         create_headers
         create_modules
+
+        # Copy resource bundle to framework (after binary is created)
+        copy_resource_bundle if has_resource_bundle?
       end
 
       # Create framework binary using libtool
@@ -302,6 +309,170 @@ module XCFrameworkCLI
       # @return [String] Products directory path
       def products_dir
         @products_dir ||= File.join(package_dir, '.build', sdk.triple, configuration)
+      end
+
+      # ============================================================================
+      # Resource Bundle Handling
+      # ============================================================================
+
+      # Override resource bundle accessor for binary framework
+      # This ensures Bundle.module works correctly in binary targets
+      #
+      # @return [void]
+      def override_resource_bundle_accessor
+        Utils::Logger.info('Overriding resource_bundle_accessor for binary framework')
+
+        # Determine language (Swift or ObjC)
+        template_name = use_clang? ? 'resource_bundle_accessor.m' : 'resource_bundle_accessor.swift'
+
+        # Create override source file
+        source_path = File.join(tmpdir, File.basename(template_name))
+        obj_path = File.join(products_dir, "#{module_name}.build", "#{File.basename(source_path)}.o")
+
+        # Render template
+        Utils::Template.render(
+          template_name,
+          {
+            PACKAGE_NAME: package_name,
+            TARGET_NAME: target,
+            MODULE_NAME: module_name
+          },
+          save_to: source_path
+        )
+
+        # Compile to object file
+        compile_resource_accessor(source_path, obj_path)
+      end
+
+      # Compile resource bundle accessor to object file
+      #
+      # @param source_path [String] Source file path
+      # @param obj_path [String] Output object file path
+      # @return [void]
+      def compile_resource_accessor(source_path, obj_path)
+        FileUtils.mkdir_p(File.dirname(obj_path))
+
+        if use_clang?
+          # Compile Objective-C
+          cmd = [
+            'xcrun', 'clang',
+            '-x', 'objective-c',
+            '-target', sdk.triple(with_version: true),
+            '-isysroot', sdk.sdk_path,
+            '-o', obj_path,
+            '-c', source_path
+          ]
+        else
+          # Compile Swift
+          cmd = [
+            'xcrun', 'swiftc',
+            '-emit-library', '-emit-object',
+            '-module-name', module_name,
+            '-target', sdk.triple(with_version: true),
+            '-sdk', sdk.sdk_path,
+            '-o', obj_path,
+            source_path
+          ]
+        end
+
+        Utils::Logger.debug("Compiling resource accessor: #{cmd.join(' ')}")
+        require 'open3'
+        stdout, stderr, status = Open3.capture3(*cmd)
+
+        unless status.success?
+          raise Error, "Failed to compile resource accessor: #{stderr}"
+        end
+
+        Utils::Logger.debug("Resource accessor compiled: #{obj_path}")
+      end
+
+      # Copy resource bundle to framework
+      #
+      # @return [void]
+      def copy_resource_bundle
+        Utils::Logger.info('Copying resource bundle to framework')
+
+        bundle_path = resource_bundle_path
+        dest_path = File.join(output_path, File.basename(bundle_path))
+
+        # Resolve symlinks before copying
+        resolve_resource_symlinks(bundle_path) if File.exist?(bundle_path)
+
+        # Copy bundle
+        FileUtils.cp_r(bundle_path, dest_path)
+        Utils::Logger.debug("Copied resource bundle: #{File.basename(bundle_path)}")
+      end
+
+      # Resolve symlinks in resource bundle
+      # SPM may create symlinks that need to be resolved for binary distribution
+      #
+      # @param bundle_path [String] Path to resource bundle
+      # @return [void]
+      def resolve_resource_symlinks(bundle_path)
+        Utils::Logger.debug('Resolving symlinks in resource bundle')
+
+        # Find all symlinks in bundle
+        symlinks = Dir.glob(File.join(bundle_path, '**', '*')).select do |path|
+          File.symlink?(path)
+        end
+
+        return if symlinks.empty?
+
+        symlinks.each do |symlink_path|
+          begin
+            # Get real path
+            real_path = File.realpath(symlink_path)
+
+            # Remove symlink
+            File.delete(symlink_path)
+
+            # Copy real file/directory
+            if File.directory?(real_path)
+              FileUtils.cp_r(real_path, symlink_path)
+            else
+              FileUtils.cp(real_path, symlink_path)
+            end
+
+            Utils::Logger.debug("Resolved symlink: #{File.basename(symlink_path)}")
+          rescue StandardError => e
+            Utils::Logger.warning("Failed to resolve symlink #{symlink_path}: #{e.message}")
+          end
+        end
+      end
+
+      # Check if target uses Clang (C/ObjC) vs Swift
+      # For now, assume Swift. Can be enhanced by checking target type
+      #
+      # @return [Boolean] True if using Clang
+      def use_clang?
+        # TODO: Parse Package.swift to determine target language
+        # For now, assume all targets are Swift
+        false
+      end
+
+      # Check if target has resource bundle
+      #
+      # @return [Boolean] True if resource bundle exists
+      def has_resource_bundle?
+        bundle_path = resource_bundle_path
+        exists = File.directory?(bundle_path)
+        Utils::Logger.debug("Checking for resource bundle at: #{bundle_path} - exists: #{exists}")
+        exists
+      end
+
+      # Get resource bundle path
+      #
+      # @return [String] Path to resource bundle
+      def resource_bundle_path
+        bundle_name = "#{package_name}_#{target}"
+        File.join(products_dir, "#{bundle_name}.bundle")
+      end
+
+      # Get package name
+      #
+      # @return [String] Package name
+      def package_name
+        @package_name ||= File.basename(package_dir)
       end
     end
   end

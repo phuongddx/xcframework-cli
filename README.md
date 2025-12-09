@@ -359,6 +359,12 @@ build:
   parallel_builds: false         # Parallel builds (not yet implemented)
   verbose: false                 # Show xcodebuild logs
   use_formatter: true            # Use xcbeautify/xcpretty
+  configuration: Release         # Debug or Release
+
+  # Custom xcodebuild settings (optional)
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    EXCLUDED_ARCHS: "x86_64"
 
 # Publishing (not yet implemented)
 # publishing:
@@ -368,6 +374,56 @@ build:
 ```
 
 See [`config/examples/`](config/examples/) for more examples.
+
+---
+
+## Custom Build Settings
+
+Override xcodebuild settings for special build requirements:
+
+### Configuration
+
+```yaml
+build:
+  configuration: Release  # or Debug
+```
+
+### Build Settings
+
+Add custom xcodebuild flags via `build_settings`:
+
+```yaml
+build:
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    EXCLUDED_ARCHS: "x86_64"
+    ENABLE_BITCODE: "NO"
+```
+
+### Common Use Cases
+
+**Fix module interface verification errors:**
+```yaml
+# Use when dependencies fail with:
+# "failed to verify module interface"
+# "Type is not a member type of class"
+build_settings:
+  OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+```
+
+**Exclude Intel simulator (faster builds):**
+```yaml
+build_settings:
+  EXCLUDED_ARCHS: "x86_64"
+```
+
+**Disable bitcode:**
+```yaml
+build_settings:
+  ENABLE_BITCODE: "NO"
+```
+
+See [`config/examples/swift-interface-workaround.yml`](config/examples/swift-interface-workaround.yml) for a complete example.
 
 ---
 

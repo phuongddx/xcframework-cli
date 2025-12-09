@@ -308,6 +308,7 @@ module XCFrameworkCLI
       #
       # @return [String] Products directory path
       def products_dir
+        # Swift build uses triple WITHOUT version for output directories
         @products_dir ||= File.join(package_dir, '.build', sdk.triple, configuration)
       end
 
@@ -468,11 +469,25 @@ module XCFrameworkCLI
         File.join(products_dir, "#{bundle_name}.bundle")
       end
 
-      # Get package name
+      # Get package name from Package.swift
       #
       # @return [String] Package name
       def package_name
-        @package_name ||= File.basename(package_dir)
+        @package_name ||= begin
+          # Try to get package name from Package.swift via swift package dump-package
+          require 'open3'
+          require 'json'
+          cmd = ['swift', 'package', 'dump-package', '--package-path', package_dir]
+          stdout, _stderr, status = Open3.capture3(*cmd)
+
+          if status.success?
+            manifest = JSON.parse(stdout)
+            manifest['name']
+          else
+            # Fallback to directory name if parsing fails
+            File.basename(package_dir)
+          end
+        end
       end
     end
   end

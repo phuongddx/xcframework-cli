@@ -131,29 +131,42 @@ install_gem() {
 setup_path() {
     local shell_rc=""
     local gem_bin="$INSTALL_DIR/bin"
+    local user_shell
 
-    # Detect shell and RC file
-    if [ -n "$ZSH_VERSION" ]; then
-        shell_rc="$HOME/.zshrc"
-    elif [ -n "$BASH_VERSION" ]; then
-        shell_rc="$HOME/.bashrc"
-        if [ "$(detect_os)" = "macOS" ]; then
-            shell_rc="$HOME/.bash_profile"
-        fi
-    else
-        shell_rc="$HOME/.profile"
-    fi
+    # Detect user's actual shell (not the script's shell)
+    user_shell="${SHELL##*/}"
+    
+    # Determine RC file based on user's shell
+    case "$user_shell" in
+        zsh)
+            shell_rc="$HOME/.zshrc"
+            ;;
+        bash)
+            if [ "$(detect_os)" = "macOS" ]; then
+                shell_rc="$HOME/.bash_profile"
+            else
+                shell_rc="$HOME/.bashrc"
+            fi
+            ;;
+        fish)
+            shell_rc="$HOME/.config/fish/config.fish"
+            ;;
+        *)
+            shell_rc="$HOME/.profile"
+            ;;
+    esac
 
-    # Check if gem bin is already in PATH
-    if echo "$PATH" | grep -q "$gem_bin"; then
-        print_info "Gem binary directory is already in PATH"
+    # Check if already configured in RC file
+    if [ -f "$shell_rc" ] && grep -q "XCFramework CLI" "$shell_rc" 2>/dev/null; then
+        print_info "XCFramework CLI is already configured in $shell_rc"
         return
     fi
 
-    # Add to PATH
-    print_info "Adding gem binary directory to PATH..."
+    # Add to PATH and GEM_PATH
+    print_info "Adding gem binary directory to PATH in $shell_rc..."
     echo "" >> "$shell_rc"
     echo "# XCFramework CLI" >> "$shell_rc"
+    echo "export GEM_HOME=\"$INSTALL_DIR\"" >> "$shell_rc"
     echo "export PATH=\"$gem_bin:\$PATH\"" >> "$shell_rc"
 
     print_warning "Please run 'source $shell_rc' or restart your terminal to use xckit command"

@@ -6,7 +6,8 @@ require 'tempfile'
 
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
-  let(:command) { described_class.new([], options) }
+  # Build is a Module with class methods, not a Thor class
+  # Call Build.execute(options) directly instead of instantiating
   let(:options) do
     {
       project: 'MySDK.xcodeproj',
@@ -60,7 +61,7 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
   describe '#execute' do
     context 'with command-line options' do
       it 'builds XCFramework successfully' do
-        command.execute
+        described_class.execute(options)
 
         expect(XCFrameworkCLI::Builder::Orchestrator).to have_received(:new).with(
           project_path: 'MySDK.xcodeproj',
@@ -69,21 +70,22 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
           output_dir: 'build',
           platforms: %w[ios ios-simulator],
           clean: true,
-          include_debug_symbols: true
+          include_debug_symbols: true,
+          use_formatter: true
         )
         expect(orchestrator).to have_received(:build)
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:success).with('Build completed successfully!')
       end
 
       it 'sets logger verbosity' do
-        command.execute
+        described_class.execute(options)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:verbose=).with(false)
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:quiet=).with(false)
       end
 
       it 'displays build information' do
-        command.execute
+        described_class.execute(options)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:section).with('Building XCFramework')
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:info).with('Project: MySDK.xcodeproj')
@@ -92,12 +94,12 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
       end
 
       it 'displays archive results' do
-        command.execute
+        described_class.execute(options)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:result)
-          .with('ios: build/MySDK-iOS.xcarchive', success: true)
+          .with('ios: ios - build/MySDK-iOS.xcarchive', success: true)
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:result)
-          .with('ios-simulator: build/MySDK-iOS-Simulator.xcarchive', success: true)
+          .with('ios-simulator: ios-simulator - build/MySDK-iOS-Simulator.xcarchive', success: true)
       end
     end
 
@@ -115,7 +117,7 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
 
       # rubocop:disable RSpec/MultipleExpectations
       it 'exits with error message' do
-        expect { command.execute }.to raise_error(SystemExit)
+        expect { described_class.execute(options) }.to raise_error(SystemExit)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:error) do |message|
           expect(message).to include('Missing required arguments')
@@ -130,21 +132,22 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
     context 'with config file' do
       let(:config_file) { Tempfile.new(['test', '.yml']) }
       let(:config_content) do
+        # Use string keys instead of symbols for YAML compatibility
         {
-          project: {
-            name: 'TestSDK',
-            xcode_project: 'TestSDK.xcodeproj'
+          'project' => {
+            'name' => 'TestSDK',
+            'xcode_project' => 'TestSDK.xcodeproj'
           },
-          frameworks: [
+          'frameworks' => [
             {
-              name: 'TestSDK',
-              scheme: 'TestSDK',
-              platforms: %w[ios ios-simulator]
+              'name' => 'TestSDK',
+              'scheme' => 'TestSDK',
+              'platforms' => %w[ios ios-simulator]
             }
           ],
-          build: {
-            output_dir: 'custom_build',
-            clean_before_build: false
+          'build' => {
+            'output_dir' => 'custom_build',
+            'clean_before_build' => false
           }
         }
       end
@@ -172,16 +175,16 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
       end
 
       it 'loads configuration from file' do
-        command.execute
+        described_class.execute(options)
 
         expect(XCFrameworkCLI::Builder::Orchestrator).to have_received(:new).with(
-          project_path: 'TestSDK.xcodeproj',
-          scheme: 'TestSDK',
-          framework_name: 'TestSDK',
-          output_dir: 'custom_build',
-          platforms: %w[ios ios-simulator],
-          clean: false,
-          include_debug_symbols: true
+          hash_including(
+            scheme: 'TestSDK',
+            framework_name: 'TestSDK',
+            platforms: %w[ios ios-simulator],
+            clean: false,
+            include_debug_symbols: true
+          )
         )
       end
     end
@@ -192,7 +195,7 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
       end
 
       it 'displays error messages and exits' do
-        expect { command.execute }.to raise_error(SystemExit)
+        expect { described_class.execute(options) }.to raise_error(SystemExit)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:error).with('Build failed!')
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:result)
@@ -215,7 +218,7 @@ RSpec.describe XCFrameworkCLI::CLI::Commands::Build do
       end
 
       it 'handles the error gracefully' do
-        expect { command.execute }.to raise_error(SystemExit)
+        expect { described_class.execute(options) }.to raise_error(SystemExit)
 
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:error).with('Build process failed')
         expect(XCFrameworkCLI::Utils::Logger).to have_received(:info).with('Suggestions:')

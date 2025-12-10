@@ -1,0 +1,63 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - "v*"
+
+permissions:
+    contents: write
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Set up Ruby
+              uses: ruby/setup-ruby@v1
+              with:
+                  ruby-version: "3.0"
+                  bundler-cache: true
+
+            - name: Install dependencies
+              run: bundle install
+
+            - name: Run tests
+              run: bundle exec rake test
+
+            - name: Build gem
+              run: gem build xcframework-cli.gemspec
+
+            - name: Get version from tag
+              id: get_version
+              run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+            - name: Create Release
+              id: create_release
+              uses: softprops/action-gh-release@v1
+              with:
+                  files: xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
+                  body: |
+                      ## XCFramework CLI ${{ steps.get_version.outputs.VERSION }}
+
+                      ### Installation
+
+                      ```bash
+                      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/phuongddx/xcframework-cli/main/install.sh)"
+                      ```
+
+                      Or download the gem and install manually:
+
+                      ```bash
+                      gem install xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
+                      ```
+
+                      ### What's Changed
+
+                      See [CHANGELOG.md](https://github.com/phuongddx/xcframework-cli/blob/main/docs/CHANGELOG.md) for details.
+                  draft: false
+                  prerelease: false
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

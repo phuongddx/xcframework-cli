@@ -14,19 +14,19 @@ Gem::Specification.new do |spec|
     watchOS, visionOS, and Mac Catalyst. It provides a clean Ruby interface to xcodebuild with#{' '}
     support for resource bundles, custom accessors, and Artifactory publishing.
   DESC
-  spec.homepage      = 'https://github.com/aavn/xcframework-cli'
-  spec.license       = 'Proprietary'
+  spec.homepage      = 'https://github.com/phuongddx/xcframework-cli'
+  spec.license       = 'MIT'
   spec.required_ruby_version = '>= 3.0.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/aavn/xcframework-cli'
-  spec.metadata['changelog_uri'] = 'https://github.com/aavn/xcframework-cli/blob/main/CHANGELOG.md'
+  spec.metadata['source_code_uri'] = 'https://github.com/phuongddx/xcframework-cli'
+  spec.metadata['changelog_uri'] = 'https://github.com/phuongddx/xcframework-cli/blob/main/docs/CHANGELOG.md'
   spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   spec.files = Dir.glob('{bin,lib,templates,config}/**/*') + %w[
     README.md
-    CHANGELOG.md
+    docs/CHANGELOG.md
     LICENSE
   ]
   spec.bindir        = 'bin'

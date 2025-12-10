@@ -1,63 +1,81 @@
 name: Release
 
 on:
-    push:
-        tags:
-            - "v*"
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release (e.g., 0.1.0)"
+        required: true
+        type: string
+      prerelease:
+        description: "Mark as pre-release"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
-    contents: write
+  contents: write
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        steps:
-            - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Set up Ruby
-              uses: ruby/setup-ruby@v1
-              with:
-                  ruby-version: "3.0"
-                  bundler-cache: true
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.0"
+          bundler-cache: true
 
-            - name: Install dependencies
-              run: bundle install
+      - name: Install dependencies
+        run: bundle install
 
-            - name: Run tests
-              run: bundle exec rake test
+      - name: Run tests
+        run: bundle exec rake test
 
-            - name: Build gem
-              run: gem build xcframework-cli.gemspec
+      - name: Build gem
+        run: gem build xcframework-cli.gemspec
 
-            - name: Get version from tag
-              id: get_version
-              run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
 
-            - name: Create Release
-              id: create_release
-              uses: softprops/action-gh-release@v1
-              with:
-                  files: xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
-                  body: |
-                      ## XCFramework CLI ${{ steps.get_version.outputs.VERSION }}
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+          name: Release v${{ steps.get_version.outputs.VERSION }}
+          files: xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
+          body: |
+            ## XCFramework CLI ${{ steps.get_version.outputs.VERSION }}
 
-                      ### Installation
+            ### Installation
 
-                      ```bash
-                      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/phuongddx/xcframework-cli/main/install.sh)"
-                      ```
+            ```bash
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/phuongddx/xcframework-cli/main/install.sh)"
+            ```
 
-                      Or download the gem and install manually:
+            Or download the gem and install manually:
 
-                      ```bash
-                      gem install xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
-                      ```
+            ```bash
+            gem install xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
+            ```
 
-                      ### What's Changed
+            ### What's Changed
 
-                      See [CHANGELOG.md](https://github.com/phuongddx/xcframework-cli/blob/main/docs/CHANGELOG.md) for details.
-                  draft: false
-                  prerelease: false
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            See [CHANGELOG.md](https://github.com/phuongddx/xcframework-cli/blob/main/docs/CHANGELOG.md) for details.
+          draft: false
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.prerelease == 'true' || false }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

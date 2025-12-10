@@ -47,14 +47,32 @@ jobs:
       - name: Build gem
         run: gem build xcframework-cli.gemspec
 
+      - name: Get gem info
+        id: gem_info
+        run: |
+          GEM_FILE=$(ls xcframework-cli-*.gem)
+          GEM_VERSION=$(echo $GEM_FILE | sed 's/xcframework-cli-\(.*\)\.gem/\1/')
+          echo "GEM_FILE=$GEM_FILE" >> $GITHUB_OUTPUT
+          echo "GEM_VERSION=$GEM_VERSION" >> $GITHUB_OUTPUT
+          echo "Built gem: $GEM_FILE (version: $GEM_VERSION)"
+
       - name: Get version
         id: get_version
         run: |
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
-          else
-            echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          # Use the version from the built gem (source of truth)
+          echo "VERSION=${{ steps.gem_info.outputs.GEM_VERSION }}" >> $GITHUB_OUTPUT
+
+      - name: Validate version consistency
+        if: github.event_name == 'push'
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          GEM_VERSION="${{ steps.gem_info.outputs.GEM_VERSION }}"
+          if [ "$TAG_VERSION" != "$GEM_VERSION" ]; then
+            echo "::error::Tag version (v$TAG_VERSION) doesn't match gem version ($GEM_VERSION)"
+            echo "Please update lib/xcframework_cli/version.rb to match the git tag before releasing"
+            exit 1
           fi
+          echo "Version validation passed: $GEM_VERSION"
 
       - name: Create Release
         id: create_release
@@ -62,7 +80,7 @@ jobs:
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           name: Release v${{ steps.get_version.outputs.VERSION }}
-          files: xcframework-cli-${{ steps.get_version.outputs.VERSION }}.gem
+          files: ${{ steps.gem_info.outputs.GEM_FILE }}
           body: |
             ## XCFramework CLI ${{ steps.get_version.outputs.VERSION }}
 

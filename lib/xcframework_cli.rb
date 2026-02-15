@@ -8,7 +8,9 @@ require_relative 'xcframework_cli/utils/template'
 require_relative 'xcframework_cli/config/loader'
 require_relative 'xcframework_cli/config/schema'
 require_relative 'xcframework_cli/config/defaults'
+require_relative 'xcframework_cli/config/generator'
 require_relative 'xcframework_cli/platform/registry'
+require_relative 'xcframework_cli/project/detector'
 require_relative 'xcframework_cli/swift/sdk'
 require_relative 'xcframework_cli/swift/builder'
 require_relative 'xcframework_cli/spm/package'
@@ -25,6 +27,7 @@ require_relative 'xcframework_cli/builder/orchestrator'
 require_relative 'xcframework_cli/cli/runner'
 require_relative 'xcframework_cli/cli/commands/build'
 require_relative 'xcframework_cli/cli/commands/spm'
+require_relative 'xcframework_cli/cli/commands/init'
 
 # Main module for XCFramework CLI
 module XCFrameworkCLI

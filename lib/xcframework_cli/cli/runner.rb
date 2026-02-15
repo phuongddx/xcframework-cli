@@ -3,12 +3,14 @@
 require 'thor'
 require_relative 'commands/build'
 require_relative 'commands/spm'
+require_relative 'commands/init'
 require_relative '../version'
 require_relative '../utils/logger'
 
 module XCFrameworkCLI
   module CLI
     # Main CLI runner that registers Thor commands
+    # rubocop:disable Metrics/ClassLength
     class Runner < Thor
       class << self
         def exit_on_failure?
@@ -127,6 +129,36 @@ module XCFrameworkCLI
       DESC
       subcommand 'spm', Commands::SPM
 
+      desc 'init', 'Initialize XCFramework configuration'
+      long_desc <<~DESC
+        Initialize a new XCFramework configuration file.
+
+        Automatically detects your project type (Swift Package or Xcode project)
+        and generates a .xcframework.yml configuration file with sensible defaults.
+
+        EXAMPLES:
+
+          Initialize in current directory:
+            $ xckit init
+
+          Generate JSON format instead:
+            $ xckit init --format json
+      DESC
+      method_option :format,
+                    type: :string,
+                    default: 'yml',
+                    desc: 'Output format (yml or json)'
+
+      def init
+        Commands::Init.execute(options)
+      rescue XCFrameworkCLI::Error => e
+        handle_error(e)
+        exit(1)
+      rescue StandardError => e
+        handle_unexpected_error(e)
+        exit(1)
+      end
+
       desc 'version', 'Display version information'
       def version
         puts "XCFramework CLI v#{XCFrameworkCLI::VERSION}"
@@ -147,6 +179,7 @@ module XCFrameworkCLI
           puts '  xckit COMMAND [OPTIONS]'
           puts
           puts 'COMMANDS:'
+          puts '  init        Initialize XCFramework configuration'
           puts '  build       Build XCFramework from Xcode project'
           puts '  spm         Build XCFramework from Swift Package'
           puts '  version     Display version information'
@@ -182,5 +215,6 @@ module XCFrameworkCLI
         warn error.backtrace.join("\n")
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

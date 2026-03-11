@@ -1,3 +1,9 @@
+---
+title: Module Overview
+parent: Architecture
+nav_order: 1
+---
+
 # XCFramework CLI - Architecture Overview
 
 Current, code-accurate view of the Ruby CLI that ships in this repo.

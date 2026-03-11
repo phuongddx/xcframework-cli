@@ -1,3 +1,9 @@
+---
+title: Architecture
+nav_order: 3
+has_children: true
+---
+
 # XCFramework CLI - Architecture
 
 Simple, modular Ruby CLI for building XCFrameworks from Xcode projects and Swift Packages. This document reflects the current codebase.

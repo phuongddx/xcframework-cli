@@ -6,6 +6,7 @@
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/phuongddx/xcframework-cli)
 [![Tests](https://img.shields.io/badge/tests-280%2B%20passing-success.svg)](spec/)
 [![License](https://img.shields.io/badge/license-AAVN-lightgrey.svg)](#license)
+[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://phuongddx.github.io/xcframework-cli)
 
 **Status**: ✅ Production Ready for iOS | 🚧 Other platforms in development
 

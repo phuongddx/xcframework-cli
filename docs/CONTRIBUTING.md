@@ -1,3 +1,8 @@
+---
+title: Contributing
+nav_order: 7
+---
+
 # Contributing to XCFramework CLI
 
 Thank you for your interest in contributing! This guide will help you get started with development, testing, and submitting contributions.

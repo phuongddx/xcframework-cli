@@ -1,3 +1,9 @@
+---
+title: Project Overview
+nav_order: 6
+has_children: true
+---
+
 # XCFramework CLI - Project Overview & Product Requirements
 
 **Last Updated:** February 15, 2026

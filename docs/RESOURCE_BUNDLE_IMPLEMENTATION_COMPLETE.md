@@ -1,3 +1,8 @@
+---
+title: Resource Bundles
+nav_order: 5
+---
+
 # Resource Bundle Implementation - Complete ✅
 
 ## Summary

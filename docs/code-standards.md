@@ -1,3 +1,9 @@
+---
+title: Developer Guide
+nav_order: 4
+has_children: true
+---
+
 # XCFramework CLI - Code Standards & Conventions
 
 **Last Updated:** February 15, 2026

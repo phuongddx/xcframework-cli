@@ -1,3 +1,9 @@
+---
+title: System Design
+parent: Architecture
+nav_order: 2
+---
+
 # XCFramework CLI - System Architecture
 
 **Last Updated:** February 15, 2026

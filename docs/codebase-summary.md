@@ -1,3 +1,9 @@
+---
+title: Codebase Summary
+parent: Developer Guide
+nav_order: 1
+---
+
 # XCFramework CLI - Codebase Summary
 
 **Last Updated:** February 15, 2026

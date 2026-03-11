@@ -1,3 +1,8 @@
+---
+title: Configuration Guide
+nav_order: 2
+---
+
 # Configuration Guide
 
 This guide explains how to configure the XCFramework CLI tools for your iOS project.

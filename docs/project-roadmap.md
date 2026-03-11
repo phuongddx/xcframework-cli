@@ -1,3 +1,9 @@
+---
+title: Roadmap
+parent: Project Overview
+nav_order: 1
+---
+
 # XCFramework CLI - Project Roadmap
 
 **Last Updated:** February 15, 2026

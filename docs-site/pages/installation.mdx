@@ -1,0 +1,129 @@
+# Installation
+
+Detailed installation instructions for XCFramework CLI.
+
+## System Requirements
+
+| Requirement | Minimum Version | Recommended |
+|------------|-----------------|-------------|
+| Ruby | 3.0 | 3.2+ |
+| Xcode | 12.0 | 15.0+ |
+| Bundler | 2.0 | Latest |
+| macOS | 11.0 (Big Sur) | 14.0+ (Sonoma) |
+
+## Installation Methods
+
+### Option 1: Clone from Repository (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/phuongddx/xcframework-cli.git
+cd xcframework-cli
+
+# Install dependencies
+bundle install
+
+# Verify installation
+./bin/xckit version
+```
+
+### Option 2: Direct Gem Install
+
+```bash
+gem install specific_install
+gem specific_install https://github.com/phuongddx/xcframework-cli.git
+```
+
+## Verifying Installation
+
+Run the version command to verify everything is working:
+
+```bash
+./bin/xckit version
+```
+
+Expected output:
+```
+XCFramework CLI v0.2.0
+```
+
+## Installing Optional Tools
+
+### xcbeautify (Recommended)
+
+Formats Xcode build output for better readability:
+
+```bash
+brew install xcbeautify
+```
+
+### xcpretty (Alternative)
+
+Another popular Xcode output formatter:
+
+```bash
+gem install xcpretty
+```
+
+## Troubleshooting
+
+### Ruby Version Issues
+
+If you see Ruby version errors:
+
+```bash
+# Install Ruby via rbenv
+brew install rbenv
+rbenv install 3.2.0
+rbenv global 3.2.0
+
+# Or via rvm
+rvm install 3.2.0
+rvm use 3.2.0 --default
+```
+
+### Bundler Issues
+
+```bash
+# Update bundler
+gem update bundler
+
+# Clear bundle cache
+bundle clean --force
+bundle install
+```
+
+### Xcode Command Line Tools
+
+```bash
+# Install or reinstall
+xcode-select --install
+
+# Reset path
+sudo xcode-select --reset
+```
+
+## Development Setup
+
+For contributing to the project:
+
+```bash
+# Clone and setup
+git clone https://github.com/phuongddx/xcframework-cli.git
+cd xcframework-cli
+bundle install
+
+# Run tests
+bundle exec rake spec
+
+# Run linter
+bundle exec rake rubocop
+
+# Interactive console
+bundle exec rake console
+```
+
+## Next Steps
+
+- [Getting Started](/getting-started) - Build your first framework
+- [Configuration](/configuration) - Learn about configuration options

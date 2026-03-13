@@ -1,0 +1,332 @@
+# API Reference
+
+Complete CLI command and option reference.
+
+## Global Commands
+
+### xckit
+
+Main CLI entry point.
+
+```bash
+./bin/xckit [command] [options]
+```
+
+#### Global Options
+
+| Option | Description |
+|--------|-------------|
+| `--help, -h` | Show help information |
+| `--version, -v` | Show version number |
+
+## Commands
+
+### build
+
+Build XCFramework from Xcode project.
+
+```bash
+./bin/xckit build [options]
+```
+
+#### Options
+
+| Option | Alias | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--config` | `-c` | String | `.xcframework.yml` | Path to configuration file |
+| `--project` | `-p` | String | - | Path to .xcodeproj file |
+| `--workspace` | `-w` | String | - | Path to .xcworkspace file |
+| `--scheme` | `-s` | String | - | Xcode scheme name |
+| `--framework-name` | `-f` | String | - | Output framework name |
+| `--platforms` | - | Array | `ios, ios-simulator` | Target platforms |
+| `--output-dir` | `-o` | String | `build` | Output directory |
+| `--configuration` | - | String | `Release` | Build configuration (Debug/Release) |
+| `--clean` | - | Boolean | `true` | Clean before build |
+| `--verbose` | - | Boolean | `false` | Enable verbose output |
+| `--quiet` | `-q` | Boolean | `false` | Suppress output |
+
+#### Examples
+
+```bash
+# Using config file
+./bin/xckit build --config .xcframework.yml
+
+# Using command-line options
+./bin/xckit build \
+  --project MySDK.xcodeproj \
+  --scheme MySDK \
+  --framework-name MySDK \
+  --platforms ios ios-simulator
+
+# Verbose mode
+./bin/xckit build --config .xcframework.yml --verbose
+
+# Skip clean
+./bin/xckit build --config .xcframework.yml --no-clean
+```
+
+---
+
+### spm build
+
+Build XCFramework from Swift Package.
+
+```bash
+./bin/xckit spm build [options]
+```
+
+#### Options
+
+| Option | Alias | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--package-dir` | - | String | `.` | Swift package directory |
+| `--targets` | `-t` | Array | All library targets | Targets to build |
+| `--platforms` | - | Array | `ios, ios-simulator` | Target platforms |
+| `--output-dir` | `-o` | String | `build` | Output directory |
+| `--configuration` | - | String | `Release` | Build configuration |
+| `--library-evolution` | - | Boolean | `true` | Enable library evolution |
+| `--version` | - | String | `14.0` | Minimum deployment target |
+| `--verbose` | - | Boolean | `false` | Enable verbose output |
+
+#### Examples
+
+```bash
+# Build all library targets
+./bin/xckit spm build --package-dir .
+
+# Build specific target
+./bin/xckit spm build \
+  --package-dir . \
+  --targets MyLibrary \
+  --platforms ios ios-simulator
+
+# Custom output
+./bin/xckit spm build \
+  --package-dir . \
+  --output-dir ./dist
+```
+
+---
+
+### init
+
+Initialize configuration file interactively.
+
+```bash
+./bin/xckit init
+```
+
+Creates a `.xcframework.yml` file through interactive prompts.
+
+#### Prompts
+
+1. Project name
+2. Xcode project path (.xcodeproj)
+3. Workspace path (optional)
+4. Framework scheme
+5. Target platforms
+6. Output directory
+7. Build configuration
+
+#### Example
+
+```bash
+$ ./bin/xckit init
+? Project name: MySDK
+? Xcode project path: MySDK.xcodeproj
+? Workspace path (optional):
+? Framework scheme: MySDK
+? Select platforms: ios, ios-simulator
+? Output directory: build
+? Build configuration: Release
+
+✓ Created .xcframework.yml
+```
+
+---
+
+### version
+
+Display CLI version information.
+
+```bash
+./bin/xckit version
+```
+
+#### Output
+
+```
+XCFramework CLI v0.2.0
+Ruby 3.2.0
+```
+
+---
+
+### platforms
+
+List all supported platforms.
+
+```bash
+./bin/xckit platforms
+```
+
+#### Output
+
+```
+Supported Platforms:
+  • ios - iOS Device
+  • ios-simulator - iOS Simulator
+  • macos - macOS
+  • tvos - tvOS Device
+  • tvos-simulator - tvOS Simulator
+  • watchos - watchOS Device
+  • watchos-simulator - watchOS Simulator
+  • visionos - visionOS Device
+  • visionos-simulator - visionOS Simulator
+  • catalyst - Mac Catalyst
+```
+
+---
+
+### clean
+
+Clean build artifacts.
+
+```bash
+./bin/xckit clean [options]
+```
+
+#### Options
+
+| Option | Alias | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--output-dir` | `-o` | String | `build` | Directory to clean |
+| `--all` | `-a` | Boolean | `false` | Clean all artifacts |
+
+#### Examples
+
+```bash
+# Clean default output directory
+./bin/xckit clean
+
+# Clean specific directory
+./bin/xckit clean --output-dir ./dist
+
+# Clean all artifacts
+./bin/xckit clean --all
+```
+
+---
+
+### validate
+
+Validate configuration file.
+
+```bash
+./bin/xckit validate [options]
+```
+
+#### Options
+
+| Option | Alias | Type | Default | Description |
+|--------|-------|------|---------|-------------|
+| `--config` | `-c` | String | `.xcframework.yml` | Config file path |
+
+#### Examples
+
+```bash
+# Validate default config
+./bin/xckit validate
+
+# Validate specific config
+./bin/xckit validate --config custom.yml
+```
+
+## Return Codes
+
+| Code | Meaning |
+|------|---------|
+| 0 | Success |
+| 1 | General error |
+| 2 | Configuration error |
+| 3 | Build error |
+| 4 | Validation error |
+
+## Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `XCFRAMEWORK_CONFIG` | Default config file path | `.xcframework.yml` |
+| `XCFRAMEWORK_OUTPUT` | Default output directory | `build` |
+| `XCFRAMEWORK_VERBOSE` | Enable verbose mode | `false` |
+
+## Configuration Schema
+
+### Project Schema
+
+```typescript
+interface Project {
+  name: string                    // Required
+  xcode_project: string           // Required
+  workspace?: string              // Optional
+}
+```
+
+### Framework Schema
+
+```typescript
+interface Framework {
+  name: string                    // Required
+  scheme: string                  // Required
+  platforms: Platform[]           // Required
+  deployment_targets?: Record<Platform, string>
+  architectures?: Record<Platform, string[]>
+}
+```
+
+### Build Schema
+
+```typescript
+interface Build {
+  output_dir?: string             // Default: "build"
+  configuration?: "Debug" | "Release"  // Default: "Release"
+  clean_before_build?: boolean    // Default: true
+  verbose?: boolean               // Default: false
+  build_settings?: Record<string, string>
+}
+```
+
+### Platform Type
+
+```typescript
+type Platform =
+  | "ios"
+  | "ios-simulator"
+  | "macos"
+  | "tvos"
+  | "tvos-simulator"
+  | "watchos"
+  | "watchos-simulator"
+  | "visionos"
+  | "visionos-simulator"
+  | "catalyst"
+```
+
+## Error Handling
+
+All errors include helpful suggestions:
+
+```bash
+❌ Build failed: Scheme 'MySDK' not found
+
+Suggestions:
+  • Verify the scheme exists in Xcode
+  • Check scheme name spelling
+  • Ensure scheme is shared (Manage Schemes → Shared)
+```
+
+## Next Steps
+
+- [Usage](/usage) - Practical usage examples
+- [Configuration](/configuration) - Configuration reference
+- [Getting Started](/getting-started) - Quick start guide

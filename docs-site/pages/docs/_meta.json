@@ -1,0 +1,26 @@
+{
+  "index": {
+    "title": "Home"
+  },
+  "project-overview": {
+    "title": "Project Overview"
+  },
+  "project-roadmap": {
+    "title": "Project Roadmap"
+  },
+  "codebase-summary": {
+    "title": "Codebase Summary"
+  },
+  "contributing": {
+    "title": "Contributing"
+  },
+  "architecture": {
+    "title": "Architecture"
+  },
+  "development": {
+    "title": "Development"
+  },
+  "guides": {
+    "title": "Guides"
+  }
+}

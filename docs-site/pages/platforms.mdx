@@ -1,0 +1,380 @@
+# Platforms
+
+Supported platforms and their specific configurations.
+
+## Overview
+
+XCFramework CLI supports all Apple platforms for XCFramework distribution:
+
+| Platform | Identifier | Status |
+|----------|-----------|--------|
+| iOS Device | `ios` | ✅ Production Ready |
+| iOS Simulator | `ios-simulator` | ✅ Production Ready |
+| macOS | `macos` | 🚧 In Development |
+| tvOS | `tvos` | 🚧 In Development |
+| tvOS Simulator | `tvos-simulator` | 🚧 In Development |
+| watchOS | `watchos` | 🚧 In Development |
+| watchOS Simulator | `watchos-simulator` | 🚧 In Development |
+| visionOS | `visionos` | 🚧 In Development |
+| visionOS Simulator | `visionos-simulator` | 🚧 In Development |
+| Catalyst | `catalyst` | 🚧 In Development |
+
+## iOS
+
+Build for iOS devices and simulators.
+
+### iOS Device (`ios`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [ios]
+    deployment_targets:
+      ios: "14.0"
+    architectures:
+      ios: [arm64]
+```
+
+**SDK:** `iphoneos`
+**Destination:** `generic/platform=iOS`
+**Architectures:** `arm64`
+**Minimum Target:** iOS 14.0
+
+### iOS Simulator (`ios-simulator`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [ios-simulator]
+    deployment_targets:
+      ios-simulator: "14.0"
+    architectures:
+      ios-simulator: [arm64, x86_64]
+```
+
+**SDK:** `iphonesimulator`
+**Destination:** `generic/platform=iOS Simulator`
+**Architectures:** `arm64`, `x86_64`
+**Minimum Target:** iOS 14.0
+
+### Combined iOS Build
+
+Build for both device and simulator:
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [ios, ios-simulator]
+    deployment_targets:
+      ios: "14.0"
+```
+
+This creates a universal XCFramework with:
+- `ios-arm64` slice for devices
+- `ios-arm64-simulator` and `ios-x86_64-simulator` slices for simulators
+
+---
+
+## macOS
+
+Build for macOS apps.
+
+### Configuration
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [macos]
+    deployment_targets:
+      macos: "11.0"
+    architectures:
+      macos: [arm64, x86_64]
+```
+
+**SDK:** `macosx`
+**Destination:** `generic/platform=macOS`
+**Architectures:** `arm64`, `x86_64`
+**Minimum Target:** macOS 11.0 (Big Sur)
+
+---
+
+## tvOS
+
+Build for Apple TV.
+
+### tvOS Device (`tvos`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [tvos]
+    deployment_targets:
+      tvos: "14.0"
+    architectures:
+      tvos: [arm64]
+```
+
+**SDK:** `appletvos`
+**Destination:** `generic/platform=tvOS`
+**Architectures:** `arm64`
+**Minimum Target:** tvOS 14.0
+
+### tvOS Simulator (`tvos-simulator`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [tvos-simulator]
+    deployment_targets:
+      tvos-simulator: "14.0"
+    architectures:
+      tvos-simulator: [arm64, x86_64]
+```
+
+**SDK:** `appletvsimulator`
+**Destination:** `generic/platform=tvOS Simulator`
+**Architectures:** `arm64`, `x86_64`
+**Minimum Target:** tvOS 14.0
+
+---
+
+## watchOS
+
+Build for Apple Watch.
+
+### watchOS Device (`watchos`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [watchos]
+    deployment_targets:
+      watchos: "7.0"
+    architectures:
+      watchos: [arm64_32]
+```
+
+**SDK:** `watchos`
+**Destination:** `generic/platform=watchOS`
+**Architectures:** `arm64_32`
+**Minimum Target:** watchOS 7.0
+
+### watchOS Simulator (`watchos-simulator`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [watchos-simulator]
+    deployment_targets:
+      watchos-simulator: "7.0"
+    architectures:
+      watchos-simulator: [x86_64]
+```
+
+**SDK:** `watchsimulator`
+**Destination:** `generic/platform=watchOS Simulator`
+**Architectures:** `x86_64`
+**Minimum Target:** watchOS 7.0
+
+---
+
+## visionOS
+
+Build for Apple Vision Pro.
+
+### visionOS Device (`visionos`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [visionos]
+    deployment_targets:
+      visionos: "1.0"
+    architectures:
+      visionos: [arm64]
+```
+
+**SDK:** `xros`
+**Destination:** `generic/platform=visionOS`
+**Architectures:** `arm64`
+**Minimum Target:** visionOS 1.0
+
+### visionOS Simulator (`visionos-simulator`)
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [visionos-simulator]
+    deployment_targets:
+      visionos-simulator: "1.0"
+    architectures:
+      visionos-simulator: [arm64]
+```
+
+**SDK:** `xrsimulator`
+**Destination:** `generic/platform=visionOS Simulator`
+**Architectures:** `arm64`
+**Minimum Target:** visionOS 1.0
+
+---
+
+## Catalyst
+
+Build for Mac Catalyst (iPad apps on macOS).
+
+### Configuration
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [catalyst]
+    deployment_targets:
+      catalyst: "11.0"
+    architectures:
+      catalyst: [arm64, x86_64]
+```
+
+**SDK:** `macosx`
+**Destination:** `generic/platform=macOS,variant=Mac Catalyst`
+**Architectures:** `arm64`, `x86_64`
+**Minimum Target:** macOS 11.0 (Big Sur)
+
+---
+
+## Multi-Platform Builds
+
+Build for multiple platforms simultaneously:
+
+### iOS + macOS
+
+```yaml
+frameworks:
+  - name: UniversalSDK
+    platforms: [ios, ios-simulator, macos]
+    deployment_targets:
+      ios: "14.0"
+      macos: "11.0"
+```
+
+### All Platforms
+
+```yaml
+frameworks:
+  - name: UniversalSDK
+    platforms:
+      - ios
+      - ios-simulator
+      - macos
+      - tvos
+      - tvos-simulator
+    deployment_targets:
+      ios: "14.0"
+      macos: "11.0"
+      tvos: "14.0"
+```
+
+---
+
+## Platform-Specific Settings
+
+### Custom Architectures
+
+Override default architectures per platform:
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [ios, ios-simulator]
+    architectures:
+      ios: [arm64]
+      ios-simulator: [arm64]  # Exclude x86_64
+```
+
+### Custom Deployment Targets
+
+Set different minimum versions per platform:
+
+```yaml
+frameworks:
+  - name: MySDK
+    platforms: [ios, macos]
+    deployment_targets:
+      ios: "15.0"     # Require iOS 15+
+      macos: "12.0"   # Require macOS 12+
+```
+
+---
+
+## Build Settings by Platform
+
+Apply platform-specific build settings:
+
+```yaml
+build:
+  build_settings:
+    # Global settings
+    ENABLE_BITCODE: "NO"
+
+    # Platform-specific (via conditionals)
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+```
+
+---
+
+## Current Status
+
+**Phase 1 (Complete):**
+- ✅ iOS device builds
+- ✅ iOS simulator builds
+- ✅ Configuration validation
+- ✅ Build pipeline orchestration
+
+**Phase 2 (Planned):**
+- 🚧 macOS support
+- 🚧 tvOS support
+- 🚧 watchOS support
+- 🚧 visionOS support
+- 🚧 Catalyst support
+
+---
+
+## Troubleshooting
+
+### Architecture Mismatches
+
+If you see architecture errors:
+
+```yaml
+# Exclude problematic architectures
+build:
+  build_settings:
+    EXCLUDED_ARCHS: "x86_64"
+```
+
+### Deployment Target Issues
+
+Ensure deployment targets are set:
+
+```yaml
+frameworks:
+  - name: MySDK
+    deployment_targets:
+      ios: "14.0"
+      macos: "11.0"
+```
+
+### Platform Not Available
+
+Check Xcode SDK availability:
+
+```bash
+xcodebuild -showsdks
+```
+
+---
+
+## Next Steps
+
+- [Configuration](/configuration) - Platform configuration options
+- [Usage](/usage) - Build commands and options
+- [Getting Started](/getting-started) - Quick start guide

@@ -6,7 +6,7 @@
 [![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/phuongddx/xcframework-cli)
 [![Tests](https://img.shields.io/badge/tests-280%2B%20passing-success.svg)](spec/)
 [![License](https://img.shields.io/badge/license-AAVN-lightgrey.svg)](#license)
-[![Docs](https://img.shields.io/badge/docs-github%20pages-blue)](https://phuongddx.github.io/xcframework-cli)
+[![Docs](https://img.shields.io/badge/docs-vercel-blue)](https://xcframework-cli.vercel.app)
 
 **Status**: ✅ Production Ready for iOS | 🚧 Other platforms in development
 
@@ -167,6 +167,8 @@ See `config/examples/` for additional examples and use cases.
 
 ## Documentation
 
+**Online Documentation**: [xcframework-cli.vercel.app](https://xcframework-cli.vercel.app)
+
 | Document | Purpose |
 |----------|---------|
 | [Architecture Guide](docs/system-architecture.md) | Detailed system design and data flows |
@@ -174,6 +176,53 @@ See `config/examples/` for additional examples and use cases.
 | [Code Standards](docs/code-standards.md) | Development conventions and patterns |
 | [Project Roadmap](docs/project-roadmap.md) | Current status and planned features |
 | [Contributing Guide](docs/CONTRIBUTING.md) | How to contribute and extend |
+
+### Deploying Documentation to Vercel
+
+The documentation site is built with Next.js + Nextra and automatically deployed to Vercel.
+
+**Prerequisites:**
+- Node.js 20.17.0 (specified in `.nvmrc`)
+- Vercel CLI (optional): `npm i -g vercel`
+
+**Automatic Deployment (Recommended):**
+
+1. Connect repository to Vercel:
+   - Visit [vercel.com](https://vercel.com)
+   - Import project from GitHub: `phuongddx/xcframework-cli`
+   - Vercel auto-detects Next.js framework
+
+2. Configure project settings:
+   - **Root Directory**: `docs-site`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `.next`
+   - **Node.js Version**: 20.x
+
+3. Deploy on push:
+   - Every push to `main` triggers automatic deployment
+   - Preview deployments for pull requests
+
+**Manual Deployment:**
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy from repository root
+vercel
+
+# Deploy to production
+vercel --prod
+```
+
+**GitHub Pages vs Vercel:**
+
+This project uses Vercel for documentation hosting. GitHub Pages configuration exists in `.github/workflows/` but Vercel provides:
+- Automatic preview deployments for PRs
+- Faster builds and global CDN
+- Built-in analytics and performance monitoring
+
+To switch to GitHub Pages, disable Vercel integration and update the docs URL in README.md.
 
 ## Project Status
 

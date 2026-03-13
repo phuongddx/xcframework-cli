@@ -1,0 +1,239 @@
+# Usage
+
+Learn how to use XCFramework CLI to build your frameworks.
+
+## Basic Commands
+
+### Initialize Configuration
+
+Create a configuration file interactively:
+
+```bash
+./bin/xckit init
+```
+
+This guides you through creating a `.xcframework.yml` file with prompts for:
+- Project name
+- Xcode project path
+- Framework scheme
+- Target platforms
+
+### Build XCFramework
+
+Using a configuration file:
+
+```bash
+./bin/xckit build --config .xcframework.yml
+```
+
+Using command-line arguments:
+
+```bash
+./bin/xckit build \
+  --project MySDK.xcodeproj \
+  --scheme MySDK \
+  --framework-name MySDK \
+  --platforms ios ios-simulator
+```
+
+### Build Swift Package
+
+```bash
+./bin/xckit spm build \
+  --package-dir . \
+  --platforms ios ios-simulator \
+  --output-dir build
+```
+
+## Command Options
+
+### build
+
+Build XCFramework from Xcode project.
+
+```bash
+./bin/xckit build [options]
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--config, -c` | Path to config file | `.xcframework.yml` |
+| `--project, -p` | Path to .xcodeproj | From config |
+| `--scheme, -s` | Xcode scheme | From config |
+| `--framework-name, -f` | Output framework name | From config |
+| `--platforms` | Target platforms | `ios, ios-simulator` |
+| `--output-dir, -o` | Output directory | `build` |
+| `--configuration` | Build configuration | `Release` |
+| `--verbose, -v` | Verbose output | `false` |
+| `--clean` | Clean before build | `true` |
+
+### spm build
+
+Build XCFramework from Swift Package.
+
+```bash
+./bin/xckit spm build [options]
+```
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--package-dir` | Package directory | `.` |
+| `--targets` | SPM targets to build | All library targets |
+| `--platforms` | Target platforms | `ios, ios-simulator` |
+| `--output-dir, -o` | Output directory | `build` |
+| `--configuration` | Build configuration | `Release` |
+
+### init
+
+Initialize configuration file interactively.
+
+```bash
+./bin/xckit init
+```
+
+### version
+
+Display version information.
+
+```bash
+./bin/xckit version
+```
+
+## Build Pipeline
+
+XCFramework CLI follows a three-step pipeline:
+
+1. **Clean** (optional) - Removes previous build artifacts
+2. **Archive** - Creates `.xcarchive` for each platform
+3. **Assemble** - Combines archives into `.xcframework`
+
+### Clean Step
+
+Removes the output directory before building:
+
+```bash
+./bin/xckit build --clean
+```
+
+Or configure in YAML:
+
+```yaml
+build:
+  clean_before_build: true
+```
+
+### Archive Step
+
+Creates platform-specific archives:
+
+```
+build/
+├── archives/
+│   ├── MySDK-ios.xcarchive/
+│   └── MySDK-ios-simulator.xcarchive/
+```
+
+### Assemble Step
+
+Combines archives into final XCFramework:
+
+```
+build/
+└── MySDK.xcframework/
+    ├── Info.plist
+    ├── ios-arm64/
+    └── ios-arm64-simulator/
+```
+
+## Build Settings
+
+Pass custom xcodebuild flags:
+
+```yaml
+build:
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    EXCLUDED_ARCHS: "x86_64"
+    ENABLE_BITCODE: "NO"
+```
+
+Or via command line (advanced):
+
+```bash
+./bin/xckit build --config .xcframework.yml
+```
+
+## Verbose Mode
+
+Enable detailed logging:
+
+```bash
+./bin/xckit build --verbose
+```
+
+Or:
+
+```yaml
+build:
+  verbose: true
+```
+
+## Example Workflows
+
+### iOS Framework
+
+```bash
+# Initialize
+./bin/xckit init
+
+# Build
+./bin/xckit build --config .xcframework.yml
+
+# Output: build/MyFramework.xcframework
+```
+
+### Swift Package
+
+```bash
+# Build SPM target
+./bin/xckit spm build \
+  --package-dir . \
+  --targets MyLibrary \
+  --platforms ios ios-simulator
+
+# Output: build/MyLibrary.xcframework
+```
+
+### Multi-Platform
+
+```yaml
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms: [ios, ios-simulator, macos, tvos]
+```
+
+```bash
+./bin/xckit build --config .xcframework.yml
+```
+
+## Help
+
+View all available commands:
+
+```bash
+./bin/xckit --help
+```
+
+View command-specific help:
+
+```bash
+./bin/xckit build --help
+./bin/xckit spm build --help
+```
+
+## Next Steps
+
+- [Configuration](/configuration) - Detailed configuration options
+- [API Reference](/api-reference) - Complete API documentation
+- [Platforms](/platforms) - Supported platforms

@@ -1,0 +1,8 @@
+{
+  "configuration": "Configuration",
+  "custom-build-settings": "Custom Build Settings",
+  "spm-builds": "SPM Builds",
+  "xcode-builds": "Xcode Project Builds",
+  "resource-bundles": "Resource Bundles",
+  "error-handling": "Error Handling"
+}

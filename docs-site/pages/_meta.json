@@ -1,0 +1,23 @@
+{
+  "index": {
+    "title": "Home"
+  },
+  "getting-started": {
+    "title": "Getting Started"
+  },
+  "installation": {
+    "title": "Installation"
+  },
+  "usage": {
+    "title": "Usage"
+  },
+  "configuration": {
+    "title": "Configuration"
+  },
+  "platforms": {
+    "title": "Platforms"
+  },
+  "api-reference": {
+    "title": "API Reference"
+  }
+}

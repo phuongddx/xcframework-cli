@@ -1,0 +1,298 @@
+# Configuration
+
+Complete configuration reference for XCFramework CLI.
+
+## Configuration Files
+
+XCFramework CLI supports YAML and JSON configuration files, searched in this order:
+
+1. `.xcframework.yml`
+2. `.xcframework.yaml`
+3. `xcframework.yml`
+4. `xcframework.yaml`
+5. `.xcframework.json`
+6. `xcframework.json`
+
+## Basic Structure
+
+```yaml
+# Project metadata
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+  workspace: MySDK.xcworkspace  # Optional
+
+# Framework definitions
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms: [ios, ios-simulator]
+    deployment_targets:
+      ios: "14.0"
+
+# Build settings
+build:
+  output_dir: build
+  configuration: Release
+  clean_before_build: true
+  verbose: false
+```
+
+## Project Section
+
+Define project-level settings:
+
+```yaml
+project:
+  name: MySDK                          # Required: Project name
+  xcode_project: MySDK.xcodeproj       # Required: Xcode project path
+  workspace: MySDK.xcworkspace         # Optional: Workspace path
+```
+
+## Frameworks Section
+
+Define one or more frameworks to build:
+
+```yaml
+frameworks:
+  - name: MySDK                        # Required: Framework name
+    scheme: MySDK                      # Required: Xcode scheme
+    platforms: [ios, ios-simulator]    # Required: Target platforms
+
+    # Optional: Deployment targets per platform
+    deployment_targets:
+      ios: "14.0"
+      ios-simulator: "14.0"
+      macos: "11.0"
+
+    # Optional: Architectures per platform
+    architectures:
+      ios: [arm64]
+      ios-simulator: [arm64, x86_64]
+```
+
+### Multiple Frameworks
+
+Build multiple frameworks in one command:
+
+```yaml
+frameworks:
+  - name: CoreFramework
+    scheme: CoreFramework
+    platforms: [ios, ios-simulator]
+
+  - name: UIFramework
+    scheme: UIFramework
+    platforms: [ios, ios-simulator]
+```
+
+## Build Section
+
+Configure build settings:
+
+```yaml
+build:
+  output_dir: build              # Output directory
+  configuration: Release         # Debug or Release
+  clean_before_build: true       # Clean before building
+  verbose: false                 # Verbose logging
+
+  # Custom xcodebuild settings
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+    EXCLUDED_ARCHS: "x86_64"
+    ENABLE_BITCODE: "NO"
+```
+
+### Build Settings
+
+Pass custom flags to xcodebuild:
+
+```yaml
+build:
+  build_settings:
+    # Swift module interface workaround
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+
+    # Exclude architectures
+    EXCLUDED_ARCHS: "x86_64"
+
+    # Disable bitcode
+    ENABLE_BITCODE: "NO"
+
+    # Custom framework search paths
+    FRAMEWORK_SEARCH_PATHS: "$(inherited) $(PROJECT_DIR)/Frameworks"
+
+    # Swift optimization level
+    SWIFT_OPTIMIZATION_LEVEL: "-O"
+```
+
+## Swift Package Configuration
+
+For Swift Package Manager projects:
+
+```yaml
+spm:
+  package_dir: "."               # Package directory
+  targets: [MyLibrary]           # Targets to build
+  platforms: [ios, ios-simulator]
+  library_evolution: true        # Enable library evolution
+  version: "14.0"                # Minimum deployment target
+
+build:
+  output_dir: "./build"
+  configuration: Release
+```
+
+## Platform Reference
+
+Supported platforms and their identifiers:
+
+| Platform | Identifier | SDK | Default Target |
+|----------|-----------|-----|----------------|
+| iOS Device | `ios` | `iphoneos` | 14.0 |
+| iOS Simulator | `ios-simulator` | `iphonesimulator` | 14.0 |
+| macOS | `macos` | `macosx` | 11.0 |
+| tvOS | `tvos` | `appletvos` | 14.0 |
+| tvOS Simulator | `tvos-simulator` | `appletvsimulator` | 14.0 |
+| watchOS | `watchos` | `watchos` | 7.0 |
+| watchOS Simulator | `watchos-simulator` | `watchsimulator` | 7.0 |
+| visionOS | `visionos` | `xros` | 1.0 |
+| visionOS Simulator | `visionos-simulator` | `xrsimulator` | 1.0 |
+| Catalyst | `catalyst` | `macosx` | 11.0 |
+
+## Configuration Examples
+
+### iOS Framework (Basic)
+
+```yaml
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms: [ios, ios-simulator]
+
+build:
+  configuration: Release
+```
+
+### iOS with Custom Settings
+
+```yaml
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms: [ios, ios-simulator]
+    deployment_targets:
+      ios: "15.0"
+    architectures:
+      ios: [arm64]
+      ios-simulator: [arm64, x86_64]
+
+build:
+  output_dir: build
+  configuration: Release
+  clean_before_build: true
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+```
+
+### Multi-Platform Framework
+
+```yaml
+project:
+  name: UniversalFramework
+  xcode_project: UniversalFramework.xcodeproj
+
+frameworks:
+  - name: UniversalFramework
+    scheme: UniversalFramework
+    platforms: [ios, ios-simulator, macos, tvos]
+    deployment_targets:
+      ios: "14.0"
+      macos: "11.0"
+      tvos: "14.0"
+
+build:
+  configuration: Release
+  verbose: true
+```
+
+### Swift Package
+
+```yaml
+spm:
+  package_dir: "."
+  targets: [MyLibrary]
+  platforms: [ios, ios-simulator]
+  library_evolution: true
+
+build:
+  output_dir: "./build"
+  configuration: Release
+```
+
+## Validation
+
+XCFramework CLI validates your configuration and provides helpful error messages:
+
+```bash
+# Configuration errors are displayed with suggestions
+./bin/xckit build --config .xcframework.yml
+
+# Example error output:
+# ❌ Invalid platform: 'iphone'
+# Suggestions:
+#   • Use 'ios' for iOS device builds
+#   • Use 'ios-simulator' for iOS Simulator builds
+#   • Run 'xckit platforms' to see all available platforms
+```
+
+## Configuration Best Practices
+
+1. **Use YAML over JSON** - Better readability and comments
+2. **Specify deployment targets** - Ensure compatibility
+3. **Use workspace for dependencies** - Proper dependency resolution
+4. **Enable clean builds in CI/CD** - Fresh builds for consistency
+5. **Pin deployment targets** - Avoid unexpected changes
+
+## Common Issues
+
+### Module Interface Verification Error
+
+Add Swift flags:
+
+```yaml
+build:
+  build_settings:
+    OTHER_SWIFT_FLAGS: "-no-verify-emitted-module-interface"
+```
+
+### x86_64 Simulator Build Failure (Apple Silicon)
+
+Exclude x86_64:
+
+```yaml
+build:
+  build_settings:
+    EXCLUDED_ARCHS: "x86_64"
+```
+
+### Framework Not Found in Archive
+
+- Verify scheme name matches framework name
+- Check scheme is shared in Xcode
+- Ensure scheme builds the correct target
+
+## Next Steps
+
+- [Usage](/usage) - Learn how to build frameworks
+- [API Reference](/api-reference) - Complete CLI reference
+- [Platforms](/platforms) - Platform-specific details

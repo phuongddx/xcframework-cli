@@ -1,0 +1,83 @@
+# Getting Started
+
+Get up and running with XCFramework CLI in minutes.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- **Ruby 3.0+** - Check with `ruby --version`
+- **Xcode 12+** - With command-line tools installed
+- **Bundler** - Install with `gem install bundler`
+
+### Optional Dependencies
+
+For better build output formatting:
+```bash
+brew install xcbeautify
+```
+
+## Installation
+
+Clone and install the gem:
+
+```bash
+git clone https://github.com/phuongddx/xcframework-cli.git
+cd xcframework-cli
+bundle install
+```
+
+Verify the installation:
+
+```bash
+./bin/xckit version
+```
+
+## Quick Start
+
+### 1. Initialize Configuration
+
+Create a configuration file interactively:
+
+```bash
+./bin/xckit init
+```
+
+This will guide you through creating a `.xcframework.yml` file.
+
+### 2. Manual Configuration
+
+Alternatively, create `.xcframework.yml` manually:
+
+```yaml
+project:
+  name: MySDK
+  xcode_project: MySDK.xcodeproj
+
+frameworks:
+  - name: MySDK
+    scheme: MySDK
+    platforms: [ios, ios-simulator]
+    deployment_targets:
+      ios: "14.0"
+
+build:
+  output_dir: build
+  configuration: Release
+  clean_before_build: true
+```
+
+### 3. Build Your Framework
+
+```bash
+./bin/xckit build --config .xcframework.yml
+```
+
+Output will be available at: `build/MySDK.xcframework/`
+
+## Next Steps
+
+- [Installation Guide](/installation) - Detailed installation options
+- [Configuration](/configuration) - Complete configuration reference
+- [Platforms](/platforms) - Supported platforms and requirements
+- [API Reference](/api-reference) - CLI commands and options

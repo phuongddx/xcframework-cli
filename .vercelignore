@@ -1,0 +1,45 @@
+# Ruby gem files
+*.gem
+.rspec_status
+coverage/
+vendor/bundle
+
+# Build artifacts
+build/
+archive/
+*.xcframework
+*.xcarchive
+
+# Example projects
+Example/
+
+# Documentation files (already in docs-site)
+docs/
+*.md
+!README.md
+
+# Git
+.git/
+.gitmodules
+.gitignore
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Test files
+spec/
+.rspec
+.rubocop.yml
+
+# Project-specific
+.project-info
+.claude/
+.grok/
+plans/
+
+# Config examples (not needed for docs)
+config/examples/
